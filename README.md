@@ -41,7 +41,7 @@ Sistem ini membantu tim Quality Control (QC) dalam menganalisis data produksi se
 ---Cara Menjalankan---
 
 1. Clone repositori ini:
-   git clone https://github.com/tofa/manufacturing-quality-ai.git
+   git clone https://github.com/aafa-sys/manufacturing-quality-ai.git
    cd manufacturing-quality-ai
 
 2. Install dependency:
