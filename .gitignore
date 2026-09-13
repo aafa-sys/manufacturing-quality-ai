@@ -1,0 +1,8 @@
+.env
+.env.*
+app.log
+logs/
+__pycache__/
+*.pyc
+portofolio/
+.venv/
