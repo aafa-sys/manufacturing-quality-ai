@@ -30,7 +30,7 @@ class LLMService:
                 contents=prompt,
                 config={
                     "response_mime_type": "application/json",
-                    "temperature": 0.1,
+                    "temperature": 0.0,
                 }
             )
             usage = response.usage_metadata

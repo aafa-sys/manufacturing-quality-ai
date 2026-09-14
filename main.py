@@ -21,7 +21,8 @@ from analisis import (
     evaluate_reject_rate,
     calculate_qc_priority,
     ringkas_reject_detail,
-    ringkas_semua_batch
+    ringkas_semua_batch,
+    verifikasi_deteksi_batch
 )
 from services.llm_service import LLMService
 from models import ProductionAnalysis
@@ -121,6 +122,14 @@ ATURAN:
 - "reject_rate_setiap_batch" harus memuat SEMUA batch dari data.
 - Jangan menambah atau mengurangi field.
 - Jangan membungkus JSON dengan markdown.
+ATURAN KELENGKAPAN (WAJIB):
+- WAJIB deteksi SEMUA batch dengan reject_qty > 19.
+- JANGAN lewatkan batch apa pun, meskipun hanya 1.
+- Setiap batch yang memenuhi kriteria HARUS masuk ke "prioritas_qc".
+- Jika ada 6 batch bermasalah, tulis 6. Jika 10, tulis 10.
+- Jangan berhenti di 2 atau 3 batch saja.
+- Verifikasi ulang sebelum menjawab: hitung jumlah batch yang kamu tulis, 
+  pastikan sama dengan jumlah di "DATA BATCH BERMASALAH.
 """
    
 
@@ -188,6 +197,13 @@ def main():
         except Exception as e:
             logger.error(f"Output AI tidak sesuai skema Pydantic: {e}")
             raise
+
+        seharusnya, dideteksi, hilang = verifikasi_deteksi_batch(problematic_batches, analisis)
+        logger.info(f"Verifikasi: seharusnya {seharusnya}, dideteksi {dideteksi}")
+        if hilang:
+           logger.warning(f"Batch yang HILANG dari output AI: {hilang}")
+        else:
+         logger.info("Semua batch bermasalah terdeteksi ")
 
         # 7. Decision layer
         engine = DecisionEngine(kpi)
