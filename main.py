@@ -53,86 +53,25 @@ load_dotenv()
 
 def build_prompt(all_batch_data, problematic_batches, reject_detail_data, reject_rates, kpi):
     """
-    Membangun prompt untuk Gemini. Prompt meminta output JSON
-    dengan struktur yang sesuai dengan models.py.
+    Membangun prompt untuk Gemini dengan membaca template dari file.
+    Versi prompt dipilih dari environment variable PROMPT_VERSION.
     """
-    prompt = f"""
-Kamu adalah AI Quality Analyst untuk sistem manufacturing.
-
-Gunakan DATA di bawah ini sebagai satu-satunya sumber kebenaran.
-Jangan mengarang angka. Jangan menghitung ulang. Gunakan apa adanya.
-
-=== KPI ===
-{kpi}
-
-=== DATA BATCH BERMASALAH (reject_qty > 19) ===
-{problematic_batches}
-
-=== DATA SEMUA BATCH ===
-{all_batch_data}
-
-=== REJECT RATE SETIAP BATCH ===
-{reject_rates}
-
-=== DATA REJECT DETAIL ===
-{reject_detail_data}
-
-=== TUGAS ===
-Kembalikan HANYA JSON dengan struktur berikut (tanpa teks tambahan):
-
-{{
-  "batch_reject_tertinggi": [
-    {{
-      "batch": "string",
-      "product": "string",
-      "reject_quantity": 0,
-      "actual_quantity": 0,
-      "reject_reason": "string",
-      "qc_status": "string"
-    }}
-  ],
-  "reject_rate_setiap_batch": [
-    {{ "batch": "string", "reject_rate": 0.0 }}
-  ],
-  "batch_reject_rate_tertinggi": [
-    {{
-      "batch": "string",
-      "reject_rate": 0.0,
-      "reject_quantity": 0,
-      "actual_quantity": 0
-    }}
-  ],
-  "prioritas_qc": [
-    {{
-      "batch": "string",
-      "reason": "string",
-      "priority_level": "URGENT"
-    }}
-  ],
-  "pola_produksi": {{
-    "facts": ["..."],
-    "analysis": ["..."],
-    "assumptions": ["..."]
-  }},
-  "kesimpulan": "string"
-}}
-
-ATURAN:
-- "priority_level" HANYA boleh: "URGENT", "HIGH", atau "NORMAL".
-- "reject_rate_setiap_batch" harus memuat SEMUA batch dari data.
-- Jangan menambah atau mengurangi field.
-- Jangan membungkus JSON dengan markdown.
-ATURAN KELENGKAPAN (WAJIB):
-- WAJIB deteksi SEMUA batch dengan reject_qty > 19.
-- JANGAN lewatkan batch apa pun, meskipun hanya 1.
-- Setiap batch yang memenuhi kriteria HARUS masuk ke "prioritas_qc".
-- Jika ada 6 batch bermasalah, tulis 6. Jika 10, tulis 10.
-- Jangan berhenti di 2 atau 3 batch saja.
-- Verifikasi ulang sebelum menjawab: hitung jumlah batch yang kamu tulis, 
-  pastikan sama dengan jumlah di "DATA BATCH BERMASALAH.
-"""
-   
-
+    import os
+    from dotenv import load_dotenv
+    
+    load_dotenv()
+    versi = os.getenv("PROMPT_VERSION", "v2")  # default v2
+    template_path = os.path.join("prompts", f"{versi}_quality_analysis.txt")
+    
+    with open(template_path, "r", encoding="utf-8") as f:
+        template = f.read()
+    
+    prompt = template.replace("{{KPI}}", str(kpi))
+    prompt = prompt.replace("{{PROBLEMATIC_BATCHES}}", str(problematic_batches))
+    prompt = prompt.replace("{{ALL_BATCHES}}", str(all_batch_data))
+    prompt = prompt.replace("{{REJECT_RATES}}", str(reject_rates))
+    prompt = prompt.replace("{{REJECT_DETAIL}}", str(reject_detail_data))
+    
     return prompt
     
 

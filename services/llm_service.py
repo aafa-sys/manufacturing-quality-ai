@@ -7,13 +7,19 @@ from google import genai
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
 from config import GEMINI_API_KEY
+import os
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
 
 logger = logging.getLogger(__name__)
 
 class LLMService:
-    def __init__(self, model: str = "gemini-3.5-flash-lite"):
+    def __init__(self, model: str = None):
         if not GEMINI_API_KEY:
             raise ValueError("GEMINI_API_KEY tidak ditemukan di file .env")
+
+        if model is None:
+            model = GEMINI_MODEL
+            
         self.client = genai.Client(api_key=GEMINI_API_KEY)
         self.model = model
 
