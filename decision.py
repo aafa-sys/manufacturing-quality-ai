@@ -25,7 +25,7 @@ class DecisionEngine:
 
         # Aturan 1: Overall reject rate (dari Python)
         overall_rate = self.kpi.get('reject_rate', 0.0)
-        if overall_rate > 5.0:
+        if overall_rate > 2.0:
             status = DecisionStatus.CRITICAL
             reasons.append(f"Overall reject rate {overall_rate:.2f}% > 2%")
             actions.append("Eskalasi ke Production Manager")
