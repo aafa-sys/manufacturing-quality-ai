@@ -2,6 +2,7 @@ import json
 import logging
 import re
 from typing import Dict, Any, Optional
+from exceptions import AIError
 
 from google import genai
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
@@ -15,7 +16,7 @@ logger = logging.getLogger(__name__)
 class LLMService:
     def __init__(self, model: str = None):
         if not GEMINI_API_KEY:
-            raise ValueError("GEMINI_API_KEY tidak ditemukan di file .env")
+            raise AIError("GEMINI_API_KEY tidak ditemukan di file .env")
 
         if model is None:
             model = GEMINI_MODEL
@@ -26,7 +27,7 @@ class LLMService:
     @retry(
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=2, max=10),
-        retry=retry_if_exception_type((json.JSONDecodeError, KeyError, TypeError, ValueError)),
+        retry=retry_if_exception_type((json.JSONDecodeError, KeyError, TypeError, ValueError,AIError)),
         reraise=True
     )
     def generate_structured_json(self, prompt: str) -> Dict[str, Any]:
@@ -61,7 +62,7 @@ class LLMService:
 )
             raw_text = response.text
             if not raw_text:
-                raise ValueError("Respons kosong dari Gemini")
+                raise AIError("Respons kosong dari Gemini")
 
             try:
                 data = json.loads(raw_text)
@@ -74,7 +75,7 @@ class LLMService:
 
         except Exception as e:
             logger.error(f"LLM call error: {e}")
-            raise
+            raise AIError(f" gagal panggil gemini : {e}")
 
     def _extract_json_from_text(self, text: str) -> Optional[Dict[str, Any]]:
     # 1. Coba cari blok di dalam markdown fences ```json ... ```

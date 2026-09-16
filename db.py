@@ -1,15 +1,16 @@
 
 import psycopg2
 from config import DB_CONFIG
+from exceptions import DatabaseError
 
 def get_connection():
-    """Membuka koneksi ke PostgreSQL."""
     try:
         conn = psycopg2.connect(**DB_CONFIG)
         return conn
     except psycopg2.Error as e:
-        print(f"Database connection failed: {e}")
-        raise
+        logger.error(f"Database connection failed: {e}")
+        raise DatabaseError(f"Tidak bisa koneksi ke database: {e}")
+
 
 def fetch_all_batches(conn):
     """Ambil semua data batch_production."""
