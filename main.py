@@ -73,6 +73,51 @@ def build_prompt(all_batch_data, problematic_batches, reject_detail_data, reject
     prompt = prompt.replace("{{REJECT_DETAIL}}", str(reject_detail_data))
     
     return prompt
+
+def validasi_output_ai(raw_json, problematic_batches):
+    """
+    Validasi output AI dengan Pydantic + verifikasi kelengkapan batch.
+    Return: objek ProductionAnalysis yang sudah tervalidasi.
+    Raise: Exception kalau tidak valid.
+    """
+    try:
+        analisis = ProductionAnalysis(**raw_json)
+        logger.info("Validasi Pydantic: OK")
+    except Exception as e:
+        logger.error(f"Output AI tidak sesuai skema Pydantic: {e}")
+        raise
+    
+    # Verifikasi kelengkapan
+    seharusnya, dideteksi, hilang = verifikasi_deteksi_batch(problematic_batches, analisis)
+    logger.info(f"Verifikasi: seharusnya {seharusnya}, dideteksi {dideteksi}")
+    if hilang:
+        logger.warning(f"Batch yang HILANG dari output AI: {hilang}")
+    else:
+        logger.info("Semua batch bermasalah terdeteksi")
+    
+    return analisis
+def proses_keputusan(kpi, analisis):
+    """
+    Jalankan decision engine, kembalikan objek DecisionResult.
+    """
+    engine = DecisionEngine(kpi)
+    decision = engine.evaluate(analisis)
+    logger.info(f"Keputusan: {decision.status.value}")
+    for reason in decision.reasons:
+        logger.info(f" - {reason}")
+    return decision
+
+
+def jalankan_aksi(decision, analisis, kpi):
+    """
+    Dispatch aksi berdasarkan keputusan (email, webhook, DB).
+    """
+    dispatcher = ActionDispatcher(config={
+        "smtp_enabled": False,
+        "webhook_url": None,
+        "kpi": kpi,
+    })
+    dispatcher.dispatch(decision, analisis)
     
 
 
@@ -125,40 +170,17 @@ def main():
         )
 
         # 5. Panggil Gemini
-        llm = LLMService()
+        llm = LLMService() 
         logger.info("Memanggil Gemini...")
         raw_json = llm.generate_structured_json(prompt)
 
-        # 6. Validasi dengan Pydantic
-        try:
-            analisis = ProductionAnalysis(**raw_json)
-            logger.info("Validasi Pydantic: OK")
-        except Exception as e:
-            logger.error(f"Output AI tidak sesuai skema Pydantic: {e}")
-            raise
-
-        seharusnya, dideteksi, hilang = verifikasi_deteksi_batch(problematic_batches, analisis)
-        logger.info(f"Verifikasi: seharusnya {seharusnya}, dideteksi {dideteksi}")
-        if hilang:
-           logger.warning(f"Batch yang HILANG dari output AI: {hilang}")
-        else:
-         logger.info("Semua batch bermasalah terdeteksi ")
-
-        # 7. Decision layer
-        engine = DecisionEngine(kpi)
-        decision = engine.evaluate(analisis)
-        logger.info(f"Keputusan: {decision.status.value}")
-        for reason in decision.reasons:
-            logger.info(f" - {reason}")
-
-        # 8. Trigger aksi
-        dispatcher = ActionDispatcher(config={
-    "smtp_enabled": False,
-    "webhook_url": None,
-    "kpi": kpi,
-})
-        dispatcher.dispatch(decision, analisis)
-
+        # 6. Validasi + verifikasi
+        analisis = validasi_output_ai(raw_json, problematic_batches)
+        # 7. Decision + aksi
+        decision = proses_keputusan(kpi, analisis)
+        jalankan_aksi(decision, analisis, kpi)
+       
+    
         # 9. Tampilkan kesimpulan AI
         logger.info(f"Kesimpulan AI: {analisis.kesimpulan}")
 
