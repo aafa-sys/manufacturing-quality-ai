@@ -28,25 +28,14 @@ from services.llm_service import LLMService
 from models import ProductionAnalysis
 from decision import DecisionEngine
 from action import ActionDispatcher
-from logging.handlers import RotatingFileHandler
-
-# Setup logging
-
-
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        RotatingFileHandler(
-            'app.log',
-            maxBytes=5 * 1024 * 1024,   # 5 MB per file
-            backupCount=3,               # simpan 3 file lama (app.log.1, .2, .3)
-            encoding='utf-8'
-        ),
-        logging.StreamHandler()
-    ]
-)
+from logger_config import setup_logger
+#setup logging pakai json formatter
+setup_logger()
 logger = logging.getLogger(__name__)
+
+
+
+
 
 load_dotenv()
 
