@@ -1,4 +1,5 @@
 import logging
+import argparse
 import os
 from dotenv import load_dotenv
 
@@ -29,6 +30,7 @@ from models import ProductionAnalysis
 from decision import DecisionEngine
 from action import ActionDispatcher
 from logger_config import setup_logger
+
 #setup logging pakai json formatter
 setup_logger()
 logger = logging.getLogger(__name__)
@@ -36,8 +38,6 @@ logger = logging.getLogger(__name__)
 
 
 
-
-load_dotenv()
 
 
 def build_prompt(all_batch_data, problematic_batches, reject_detail_data, reject_rates, kpi):
@@ -107,16 +107,41 @@ def jalankan_aksi(decision, analisis, kpi):
         "kpi": kpi,
     })
     dispatcher.dispatch(decision, analisis)
+def parse_arguments():
+    """
+    Baca argumen dari command line.
+    Contoh: python main.py --prompt-version v3
+    """
+    parser = argparse.ArgumentParser(
+        description="Manufacturing Quality AI - Analisis kualitas produksi"
+    )
+    parser.add_argument(
+        "--prompt-version",
+        type=str,
+        default=None,
+        help="Versi prompt yang dipakai (contoh: v2, v3). Kalau tidak diisi, pakai dari .env",
+    )
+    args = parser.parse_args()
+    return args
     
 
 
 def main():
+    # 0. Baca argumen CLI
+    args = parse_arguments()
+    if args.prompt_version:
+        logger.info(f"Prompt version dari CLI: {args.prompt_version}")
+        # Override .env
+        import os
+        os.environ["PROMPT_VERSION"] = args.prompt_version
+    
     # 1. Buka koneksi database
     conn = get_connection()
     try:
         # 2. Ambil data
         all_batch_data = fetch_all_batches(conn)
         reject_detail_data = fetch_reject_details(conn)
+   
         problematic_batches = fetch_problematic_batches(conn)
 
         # 3. Hitung KPI
