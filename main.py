@@ -2,6 +2,9 @@ import logging
 import argparse
 import os
 from dotenv import load_dotenv
+import csv
+from datetime import datetime
+
 
 from db import (
     get_connection,
@@ -126,13 +129,49 @@ def parse_arguments():
     
 
 
+def catat_metrik_run(prompt_version, usage, total_batch, batch_terdeteksi, status):
+    """
+    Catat metrik run ke file runs.csv.
+    Kalau file belum ada, buat + tulis header.
+    """
+    file_path = "runs.csv"
+    file_exists = os.path.exists(file_path)
+    
+    biaya_usd = (usage["input"] / 1_000_000 * 0.10) + (usage["output"] / 1_000_000 * 0.40)
+    biaya_idr = biaya_usd * 16000
+    
+    with open(file_path, mode="a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        
+        # Kalau file baru, tulis header dulu
+        if not file_exists:
+            writer.writerow([
+                "timestamp", "prompt_version", "input_token", "output_token",
+                "total_token", "biaya_usd", "biaya_idr", "total_batch",
+                "batch_terdeteksi", "status"
+            ])
+        
+        # Tulis baris data
+        writer.writerow([
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            prompt_version,
+            usage["input"],
+            usage["output"],
+            usage["total"],
+            round(biaya_usd, 6),
+            round(biaya_idr, 2),
+            total_batch,
+            batch_terdeteksi,
+            status,
+        ])
+
 def main():
     # 0. Baca argumen CLI
     args = parse_arguments()
     if args.prompt_version:
         logger.info(f"Prompt version dari CLI: {args.prompt_version}")
         # Override .env
-        import os
+
         os.environ["PROMPT_VERSION"] = args.prompt_version
     
     # 1. Buka koneksi database
@@ -186,7 +225,7 @@ def main():
         # 5. Panggil Gemini
         llm = LLMService() 
         logger.info("Memanggil Gemini...")
-        raw_json = llm.generate_structured_json(prompt)
+        raw_json,usage= llm.generate_structured_json(prompt)
 
         # 6. Validasi + verifikasi
         analisis = validasi_output_ai(raw_json, problematic_batches)
@@ -197,6 +236,18 @@ def main():
     
         # 9. Tampilkan kesimpulan AI
         logger.info(f"Kesimpulan AI: {analisis.kesimpulan}")
+
+        # 10. Catat metrik run
+        prompt_version = os.getenv("PROMPT_VERSION", "v2")
+        seharusnya, dideteksi, _ = verifikasi_deteksi_batch(problematic_batches, analisis)
+        catat_metrik_run(
+            prompt_version=prompt_version,
+            usage=usage,
+            total_batch=total_batches,
+            batch_terdeteksi=dideteksi,
+            status=decision.status.value,
+        )
+        logger.info(f"Metrik dicatat ke runs.csv")
 
     except Exception as e:
         logger.error(f"Error di main: {e}", exc_info=True)

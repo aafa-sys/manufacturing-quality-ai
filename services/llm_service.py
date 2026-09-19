@@ -64,13 +64,19 @@ class LLMService:
             if not raw_text:
                 raise AIError("Respons kosong dari Gemini")
 
+            usage_dict = {
+                "input": usage.prompt_token_count,
+                "output": usage.candidates_token_count,
+                "total": usage.total_token_count,
+            }
+            
             try:
                 data = json.loads(raw_text)
-                return data
+                return data, usage_dict
             except json.JSONDecodeError:
                 extracted = self._extract_json_from_text(raw_text)
                 if extracted:
-                    return extracted
+                    return extracted, usage_dict
                 raise
 
         except Exception as e:
