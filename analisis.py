@@ -1,5 +1,3 @@
-
-
 def calculate_reject_rates(all_batch_data):
     """Menghitung reject rate per batch. Return list of tuples (batch_no, rate)."""
     reject_rates = []
@@ -138,13 +136,21 @@ def ringkas_semua_batch(all_batch_data, bottom_n=5):
         "statistik": statistik,
         "bottom_5_reject_terendah": bottom_n_batch
     }
+
+
+def normalisasi_batch(batch_str):
+    """Ambil 3 digit terakhir. BT26G009 -> 9, B000009 -> 9."""
+    return int(batch_str[-3:])
+
+
+
 def verifikasi_deteksi_batch(problematic_batches, analysis):
     """
     Cek apakah AI mendeteksi semua batch bermasalah.
-    Return: (jumlah_seharusnya, jumlah_dideteksi, list_yang_hilang)
+    Pakai normalisasi biar format B000009 dan BT26G009 dianggap sama.
     """
-    batch_seharusnya = set(row[1] for row in problematic_batches)  # index 1 = batch_no
-    batch_dideteksi = set(qc.batch for qc in analysis.prioritas_qc)
+    batch_seharusnya = set(normalisasi_batch(row[1]) for row in problematic_batches)
+    batch_dideteksi = set(normalisasi_batch(qc.batch) for qc in analysis.prioritas_qc)
     
     hilang = batch_seharusnya - batch_dideteksi
     return len(batch_seharusnya), len(batch_dideteksi), list(hilang)
