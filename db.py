@@ -2,7 +2,14 @@
 import psycopg2
 from config import DB_CONFIG
 from exceptions import DatabaseError
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
+@retry(
+    stop=stop_after_attempt(5),
+    wait=wait_exponential(multiplier=1, min=2, max=10),
+    retry=retry_if_exception_type(DatabaseError),
+    reraise=True
+)
 def get_connection():
     try:
         conn = psycopg2.connect(**DB_CONFIG)
@@ -10,7 +17,6 @@ def get_connection():
     except psycopg2.Error as e:
         logger.error(f"Database connection failed: {e}")
         raise DatabaseError(f"Tidak bisa koneksi ke database: {e}")
-
 
 def fetch_all_batches(conn):
     """Ambil semua data batch_production."""

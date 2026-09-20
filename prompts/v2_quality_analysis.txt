@@ -59,15 +59,15 @@ Kembalikan HANYA JSON dengan struktur berikut (tanpa teks tambahan):
 }
 
 ATURAN:
-- "priority_level" HANYA boleh: "URGENT", "HIGH", atau "NORMAL".
-- "reject_rate_setiap_batch" harus memuat SEMUA batch dari data.
+- priority_level HANYA boleh: URGENT, HIGH, atau NORMAL.
+- reject_rate_setiap_batch harus memuat SEMUA batch dari data.
 - Jangan menambah atau mengurangi field.
 - Jangan membungkus JSON dengan markdown.
 
 ATURAN KELENGKAPAN (WAJIB):
 - WAJIB deteksi SEMUA batch dengan reject_qty > 19.
 - JANGAN lewatkan batch apa pun, meskipun hanya 1.
-- Setiap batch yang memenuhi kriteria HARUS masuk ke "prioritas_qc".
+- Setiap batch yang memenuhi kriteria HARUS masuk ke prioritas_qc.
 - Jika ada 6 batch bermasalah, tulis 6. Jika 10, tulis 10.
 - Jangan berhenti di 2 atau 3 batch saja.
-- Verifikasi ulang sebelum menjawab: hitung jumlah batch yang kamu tulis, pastikan sama dengan jumlah di "DATA BATCH BERMASALAH".
+- Verifikasi ulang sebelum menjawab: hitung jumlah batch yang kamu tulis, pastikan sama dengan jumlah di DATA BATCH BERMASALAH.

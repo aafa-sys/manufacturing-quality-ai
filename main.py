@@ -59,11 +59,11 @@ def build_prompt(all_batch_data, problematic_batches, reject_detail_data, reject
     with open(template_path, "r", encoding="utf-8") as f:
         template = f.read()
     
-    prompt = template.replace("{{KPI}}", json.dumps(kpi, ensure_ascii=False))
-    prompt = template.replace("{{PROBLEMATIC_BATCHES}}", json.dumps(problematic_batches, ensure_ascii=False, default=str))
-    prompt = template.replace("{{ALL_BATCHES}}", json.dumps(all_batch_data, ensure_ascii=False, default=str))
-    prompt = template.replace("{{REJECT_RATES}}", json.dumps(reject_rates, ensure_ascii=False, default=str))
-    prompt = template.replace("{{REJECT_DETAIL}}", json.dumps(reject_detail_data, ensure_ascii=False, default=str))
+    prompt = template.replace("{{KPI}}", str(kpi))
+    prompt = prompt.replace("{{PROBLEMATIC_BATCHES}}", str(problematic_batches))
+    prompt = prompt.replace("{{ALL_BATCHES}}", str(all_batch_data))
+    prompt = prompt.replace("{{REJECT_RATES}}", str(reject_rates))
+    prompt = prompt.replace("{{REJECT_DETAIL}}", str(reject_detail_data))
     
     return prompt
 
