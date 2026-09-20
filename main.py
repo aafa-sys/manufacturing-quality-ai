@@ -3,6 +3,7 @@ import argparse
 import os
 from dotenv import load_dotenv
 import csv
+import json
 from datetime import datetime
 
 
@@ -58,11 +59,11 @@ def build_prompt(all_batch_data, problematic_batches, reject_detail_data, reject
     with open(template_path, "r", encoding="utf-8") as f:
         template = f.read()
     
-    prompt = template.replace("{{KPI}}", str(kpi))
-    prompt = prompt.replace("{{PROBLEMATIC_BATCHES}}", str(problematic_batches))
-    prompt = prompt.replace("{{ALL_BATCHES}}", str(all_batch_data))
-    prompt = prompt.replace("{{REJECT_RATES}}", str(reject_rates))
-    prompt = prompt.replace("{{REJECT_DETAIL}}", str(reject_detail_data))
+    prompt = template.replace("{{KPI}}", json.dumps(kpi, ensure_ascii=False))
+    prompt = template.replace("{{PROBLEMATIC_BATCHES}}", json.dumps(problematic_batches, ensure_ascii=False, default=str))
+    prompt = template.replace("{{ALL_BATCHES}}", json.dumps(all_batch_data, ensure_ascii=False, default=str))
+    prompt = template.replace("{{REJECT_RATES}}", json.dumps(reject_rates, ensure_ascii=False, default=str))
+    prompt = template.replace("{{REJECT_DETAIL}}", json.dumps(reject_detail_data, ensure_ascii=False, default=str))
     
     return prompt
 
@@ -166,17 +167,17 @@ def catat_metrik_run(prompt_version, usage, total_batch, batch_terdeteksi, statu
         ])
 
 def main():
-    # 0. Baca argumen CLI
     args = parse_arguments()
     if args.prompt_version:
         logger.info(f"Prompt version dari CLI: {args.prompt_version}")
-        # Override .env
-
         os.environ["PROMPT_VERSION"] = args.prompt_version
     
     # 1. Buka koneksi database
-    conn = get_connection()
+    conn = None       
     try:
+        conn = get_connection()   # PINDAH KE DALAM try
+       
+
         # 2. Ambil data
         all_batch_data = fetch_all_batches(conn)
         reject_detail_data = fetch_reject_details(conn)
@@ -252,8 +253,9 @@ def main():
     except Exception as e:
         logger.error(f"Error di main: {e}", exc_info=True)
     finally:
-        conn.close()
-        logger.info("Koneksi database ditutup")
+        if conn:
+          conn.close()
+          logger.info("Koneksi database ditutup")
 
 
 if __name__ == "__main__":
