@@ -23,6 +23,7 @@ class QCPriority(BaseModel):
     batch: str
     reason: str
     priority_level: Literal["URGENT", "HIGH", "NORMAL"]
+    recomended_action:str = ""
 
 class ProductionPattern(BaseModel):
     facts: List[str]
