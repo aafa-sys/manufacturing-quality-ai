@@ -138,12 +138,15 @@ def ringkas_semua_batch(all_batch_data, bottom_n=5):
     }
 
 
+
+
+
 def normalisasi_batch(batch_str):
-    """Ambil 3 digit terakhir. BT26G009 -> 9, B000009 -> 9."""
-    return int(batch_str[-3:])
-
-
-
+    """Ambil 3 digit terakhir.kalau bukan angka return -1"""
+    last_3 = batch_str[-3:]
+    if last_3.isdigit():
+        return int(last_3)
+    return -1
 def verifikasi_deteksi_batch(problematic_batches, analysis):
     """
     Cek apakah AI mendeteksi semua batch bermasalah.

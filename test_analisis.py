@@ -74,3 +74,40 @@ def test_find_worst_batch_by_rate_kosong():
     assert worst_rate is None
     assert valid_count == 0
 
+from analisis import normalisasi_batch
+
+
+def test_normalisasi_bt26g009():
+    """A: BT26G009 -> 9."""
+    hasil = normalisasi_batch("BT26G009")
+
+    assert hasil == 9
+
+
+    
+
+
+def test_normalisasi_b000009():
+    """B: B000009 -> 9."""
+    hasil = normalisasi_batch("B000009")
+
+    assert hasil == 9
+
+
+def test_normalisasi_format_sama():
+    """E: BT26G009 == B000009."""
+    a = normalisasi_batch("BT26G009")
+    b = normalisasi_batch("B000009")
+    assert a == b
+
+
+def test_normalisasi_format_aneh():
+    """F: format aneh tidak error."""
+
+    hasil = normalisasi_batch("XX999")
+    assert hasil == 999
+
+def test_normalisasi_tanpa_angka():
+    """F2: input tanpa angka return -1."""
+    hasil = normalisasi_batch("XXX")
+    assert hasil == -1
