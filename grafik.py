@@ -65,9 +65,7 @@ def buat_grafik(data):
     plt.savefig("grafik_metrics.png", dpi=100)
     print("Grafik disimpan ke grafik_metrics.png")
     
-    # Tampilkan (opsional)
-    plt.show()
-
+    
 
 if __name__ == "__main__":
     data = baca_runs_csv("runs.csv")
