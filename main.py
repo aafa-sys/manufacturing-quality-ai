@@ -164,7 +164,35 @@ def catat_metrik_run(prompt_version, usage, total_batch, batch_terdeteksi, statu
             total_batch,
             batch_terdeteksi,
             status,
-        ])
+        ]) 
+def hitung_kpi(all_batch_data):
+    reject_rates = calculate_reject_rates(all_batch_data)
+    total_batches = calculate_total_batches(all_batch_data)
+    total_reject = calculate_total_reject(all_batch_data)
+    total_actual = calculate_total_actual(all_batch_data)
+    total_plan = calculate_total_plan(all_batch_data)
+    avg_reject = calculate_average_reject(total_reject, total_batches)
+    overall_rate = calculate_overall_reject_rate(total_reject, total_actual)
+    status = evaluate_reject_rate(overall_rate)
+    
+    worst_batch_qty = find_worst_batch_by_reject(all_batch_data)
+    worst_batch_rate, worst_rate_value, valid_count = find_worst_batch_by_rate(all_batch_data)
+    qc_priority = calculate_qc_priority(worst_rate_value)
+    kpi = {
+                "total_batch": total_batches,
+                "total_reject": total_reject,
+                "total_actual": total_actual,
+                "total_plan": total_plan,
+                "avg_reject": avg_reject,
+                "reject_rate": overall_rate,
+                "reject_status": status,
+                "qc_priority": qc_priority,
+                "worst_reject_rate": worst_rate_value if worst_rate_value else 0.0,
+            }
+    return kpi,reject_rates
+    
+
+
 
 def main():
     args = parse_arguments()
@@ -184,36 +212,8 @@ def main():
    
         problematic_batches = fetch_problematic_batches(conn)
 
-        # 3. Hitung KPI
-        reject_rates = calculate_reject_rates(all_batch_data)
-        total_batches = calculate_total_batches(all_batch_data)
-        total_reject = calculate_total_reject(all_batch_data)
-        total_actual = calculate_total_actual(all_batch_data)
-        total_plan = calculate_total_plan(all_batch_data)
-        avg_reject = calculate_average_reject(total_reject, total_batches)
-        overall_rate = calculate_overall_reject_rate(total_reject, total_actual)
-        status = evaluate_reject_rate(overall_rate)
-
-        worst_batch_qty = find_worst_batch_by_reject(all_batch_data)
-        worst_batch_rate, worst_rate_value, valid_count = find_worst_batch_by_rate(all_batch_data)
-        qc_priority = calculate_qc_priority(worst_rate_value)
-
-        kpi = {
-            "total_batch": total_batches,
-            "total_reject": total_reject,
-            "total_actual": total_actual,
-            "total_plan": total_plan,
-            "avg_reject": avg_reject,
-            "reject_rate": overall_rate,
-            "reject_status": status,
-            "qc_priority": qc_priority,
-            "worst_reject_rate": worst_rate_value if worst_rate_value else 0.0,
-        }
-
-        logger.info("=== KPI DIHITUNG ===")
-        logger.info(f"Total Batch: {total_batches} | Total Reject: {total_reject}")
-        logger.info(f"Overall Rate: {overall_rate}% | Status: {status}")
-
+        kpi,reject_rates = hitung_kpi(all_batch_data)
+        
         # 4. Bangun prompt
         prompt = build_prompt(
             all_batch_data,
@@ -244,7 +244,7 @@ def main():
         catat_metrik_run(
             prompt_version=prompt_version,
             usage=usage,
-            total_batch=total_batches,
+            total_batch=kpi["total_batch"],
             batch_terdeteksi=dideteksi,
             status=decision.status.value,
         )
