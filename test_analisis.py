@@ -111,3 +111,15 @@ def test_normalisasi_tanpa_angka():
     """F2: input tanpa angka return -1."""
     hasil = normalisasi_batch("XXX")
     assert hasil == -1
+from main import hitung_kpi
+def test_hitung_kpi_normal():
+    """Test: hitung_kpi dengan 3 batch normal."""
+    data = [
+        (1, "BT001", "Kecap", "A", "Line1", 100, 100, 5, "Pass"),
+        (2, "BT002", "Kecap", "A", "Line1", 100, 200, 20, "Pass"),
+        (3, "BT003", "Kecap", "A", "Line1", 100, 150, 15, "Pass"),
+    ]
+    kpi, reject_rates = hitung_kpi(data)
+    assert kpi["total_batch"] == 3
+    assert kpi["total_reject"] == 40      # 5 + 20 + 15
+    assert kpi["total_actual"] == 450     # 100 + 200 + 150
