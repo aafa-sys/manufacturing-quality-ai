@@ -1,4 +1,3 @@
-
 import psycopg2
 from config import DB_CONFIG
 from exceptions import DatabaseError

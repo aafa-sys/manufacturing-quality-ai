@@ -190,6 +190,15 @@ def hitung_kpi(all_batch_data):
                 "worst_reject_rate": worst_rate_value if worst_rate_value else 0.0,
             }
     return kpi,reject_rates
+
+def ambil_data(conn):
+    all_batch_data = fetch_all_batches(conn)
+    reject_detail_data = fetch_reject_details(conn)
+       
+    problematic_batches = fetch_problematic_batches(conn)
+
+    return all_batch_data,reject_detail_data,problematic_batches
+    
     
 
 
@@ -207,10 +216,7 @@ def main():
        
 
         # 2. Ambil data
-        all_batch_data = fetch_all_batches(conn)
-        reject_detail_data = fetch_reject_details(conn)
-   
-        problematic_batches = fetch_problematic_batches(conn)
+        all_batch_data,reject_detail_data,problematic_batches =ambil_data(conn)
 
         kpi,reject_rates = hitung_kpi(all_batch_data)
         
