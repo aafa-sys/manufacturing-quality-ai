@@ -198,6 +198,55 @@ def ambil_data(conn):
     problematic_batches = fetch_problematic_batches(conn)
 
     return all_batch_data,reject_detail_data,problematic_batches
+
+
+def jalankan_analisis(conn):
+    """jalankan analisis lengkap sampai catat metriks"""
+    # 2. Ambil data
+    all_batch_data,reject_detail_data,problematic_batches=ambil_data(conn)
+    
+    kpi,reject_rates = hitung_kpi(all_batch_data)
+            
+    # 4. Bangun prompt
+    prompt = build_prompt(
+        all_batch_data,
+        problematic_batches,
+        ringkas_reject_detail(reject_detail_data),
+        reject_rates,
+        kpi,
+        )
+    
+    # 5. Panggil Gemini
+    llm = LLMService() 
+    logger.info("Memanggil Gemini...")
+    raw_json,usage= llm.generate_structured_json(prompt)
+    
+    # 6. Validasi + verifikasi
+    analisis = validasi_output_ai(raw_json, problematic_batches)
+    # 7. Decision + aksi
+    decision = proses_keputusan(kpi, analisis)
+    jalankan_aksi(decision, analisis, kpi)
+           
+        
+    # 9. Tampilkan kesimpulan AI
+    logger.info(f"Kesimpulan AI: {analisis.kesimpulan}")
+    
+    # 10. Catat metrik run
+    prompt_version = os.getenv("PROMPT_VERSION", "v2")
+    seharusnya, dideteksi, _ = verifikasi_deteksi_batch(problematic_batches, analisis)
+    catat_metrik_run(
+        prompt_version=prompt_version,
+        usage=usage,
+        total_batch=kpi["total_batch"],
+        batch_terdeteksi=dideteksi,
+        status=decision.status.value,
+        )
+    logger.info(f"Metrik dicatat ke runs.csv")
+    
+
+        
+
+
     
     
 
@@ -213,49 +262,10 @@ def main():
     conn = None       
     try:
         conn = get_connection()   # PINDAH KE DALAM try
+        jalankan_analisis(conn)
        
 
-        # 2. Ambil data
-        all_batch_data,reject_detail_data,problematic_batches =ambil_data(conn)
-
-        kpi,reject_rates = hitung_kpi(all_batch_data)
         
-        # 4. Bangun prompt
-        prompt = build_prompt(
-            all_batch_data,
-            problematic_batches,
-            ringkas_reject_detail(reject_detail_data),
-            reject_rates,
-            kpi,
-        )
-
-        # 5. Panggil Gemini
-        llm = LLMService() 
-        logger.info("Memanggil Gemini...")
-        raw_json,usage= llm.generate_structured_json(prompt)
-
-        # 6. Validasi + verifikasi
-        analisis = validasi_output_ai(raw_json, problematic_batches)
-        # 7. Decision + aksi
-        decision = proses_keputusan(kpi, analisis)
-        jalankan_aksi(decision, analisis, kpi)
-       
-    
-        # 9. Tampilkan kesimpulan AI
-        logger.info(f"Kesimpulan AI: {analisis.kesimpulan}")
-
-        # 10. Catat metrik run
-        prompt_version = os.getenv("PROMPT_VERSION", "v2")
-        seharusnya, dideteksi, _ = verifikasi_deteksi_batch(problematic_batches, analisis)
-        catat_metrik_run(
-            prompt_version=prompt_version,
-            usage=usage,
-            total_batch=kpi["total_batch"],
-            batch_terdeteksi=dideteksi,
-            status=decision.status.value,
-        )
-        logger.info(f"Metrik dicatat ke runs.csv")
-
     except Exception as e:
         logger.error(f"Error di main: {e}", exc_info=True)
     finally:
