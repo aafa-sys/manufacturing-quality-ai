@@ -1,9 +1,7 @@
 import logging
 import argparse
 import os
-from dotenv import load_dotenv
 import csv
-import json
 from datetime import datetime
 
 
@@ -15,7 +13,6 @@ from db import (
 )
 from analisis import (
     calculate_reject_rates,
-    find_worst_batch_by_reject,
     find_worst_batch_by_rate,
     calculate_total_batches,
     calculate_total_reject,
@@ -26,7 +23,6 @@ from analisis import (
     evaluate_reject_rate,
     calculate_qc_priority,
     ringkas_reject_detail,
-    ringkas_semua_batch,
     verifikasi_deteksi_batch
 )
 from services.llm_service import LLMService
@@ -49,10 +45,9 @@ def build_prompt(all_batch_data, problematic_batches, reject_detail_data, reject
     Membangun prompt untuk Gemini dengan membaca template dari file.
     Versi prompt dipilih dari environment variable PROMPT_VERSION.
     """
-    import os
-    from dotenv import load_dotenv
     
-    load_dotenv()
+    
+    
     versi = os.getenv("PROMPT_VERSION", "v2")  # default v2
     template_path = os.path.join("prompts", f"{versi}_quality_analysis.txt")
     
@@ -175,8 +170,8 @@ def hitung_kpi(all_batch_data):
     overall_rate = calculate_overall_reject_rate(total_reject, total_actual)
     status = evaluate_reject_rate(overall_rate)
     
-    worst_batch_qty = find_worst_batch_by_reject(all_batch_data)
-    worst_batch_rate, worst_rate_value, valid_count = find_worst_batch_by_rate(all_batch_data)
+  
+    worst_batch_rate,worst_rate_value,valid_count = find_worst_batch_by_rate(all_batch_data)
     qc_priority = calculate_qc_priority(worst_rate_value)
     kpi = {
                 "total_batch": total_batches,
@@ -202,12 +197,12 @@ def ambil_data(conn):
 
 def jalankan_analisis(conn):
     """jalankan analisis lengkap sampai catat metriks"""
-    # 2. Ambil data
+    # 1. Ambil data
     all_batch_data,reject_detail_data,problematic_batches=ambil_data(conn)
     
     kpi,reject_rates = hitung_kpi(all_batch_data)
             
-    # 4. Bangun prompt
+    # 2. Bangun prompt
     prompt = build_prompt(
         all_batch_data,
         problematic_batches,
@@ -216,22 +211,22 @@ def jalankan_analisis(conn):
         kpi,
         )
     
-    # 5. Panggil Gemini
+    # 3. Panggil Gemini
     llm = LLMService() 
     logger.info("Memanggil Gemini...")
     raw_json,usage= llm.generate_structured_json(prompt)
     
-    # 6. Validasi + verifikasi
+    # 4. Validasi + verifikasi
     analisis = validasi_output_ai(raw_json, problematic_batches)
-    # 7. Decision + aksi
+    # 5. Decision + aksi
     decision = proses_keputusan(kpi, analisis)
     jalankan_aksi(decision, analisis, kpi)
            
         
-    # 9. Tampilkan kesimpulan AI
+    # 6. Tampilkan kesimpulan AI
     logger.info(f"Kesimpulan AI: {analisis.kesimpulan}")
     
-    # 10. Catat metrik run
+    # 7. Catat metrik run
     prompt_version = os.getenv("PROMPT_VERSION", "v2")
     seharusnya, dideteksi, _ = verifikasi_deteksi_batch(problematic_batches, analisis)
     catat_metrik_run(
@@ -258,7 +253,7 @@ def main():
         logger.info(f"Prompt version dari CLI: {args.prompt_version}")
         os.environ["PROMPT_VERSION"] = args.prompt_version
     
-    # 1. Buka koneksi database
+    # Buka koneksi database
     conn = None       
     try:
         conn = get_connection()   # PINDAH KE DALAM try
