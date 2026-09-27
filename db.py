@@ -3,6 +3,9 @@ from config import DB_CONFIG
 from exceptions import DatabaseError
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
+import logging
+logger = logging.getLogger(__name__)
+
 @retry(
     stop=stop_after_attempt(5),
     wait=wait_exponential(multiplier=1, min=2, max=10),
