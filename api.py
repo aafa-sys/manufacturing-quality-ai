@@ -14,3 +14,13 @@ def get_batches(shift: str = None, line: int = None):
 
     return {"shift": shift, "line": line}
 
+from pydantic import BaseModel
+
+class BatchInput(BaseModel):
+    batch_no: str
+    reject_qty: int
+    qc_status: str
+
+@app.post("/input-batch")
+async def input_batch(data: BatchInput):
+    return {"received":data.batch_no,"reject":data.reject_qty,"qc_status":data.qc_status}
