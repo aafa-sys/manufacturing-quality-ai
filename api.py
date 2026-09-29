@@ -9,3 +9,8 @@ async def root():
 async def ambil_batch(batch_id: int):
     return {"batch_id":batch_id,"message":"data batch ini"}
 
+@app.get("/batches")
+def get_batches(shift: str = None, line: int = None):
+
+    return {"shift": shift, "line": line}
+
