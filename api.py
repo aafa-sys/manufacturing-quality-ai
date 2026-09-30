@@ -23,4 +23,16 @@ class BatchInput(BaseModel):
 
 @app.post("/input-batch")
 async def input_batch(data: BatchInput):
-    return {"received":data.batch_no,"reject":data.reject_qty,"qc_status":data.qc_status}
+    return {"received":data.batch_no,"reject":data.reject_qty,"qc_status":data.qc_status} 
+
+class BatchResponse(BaseModel):
+    batch_no: str
+    reject_qty : int
+    qc_status : str
+    message : str
+
+@app.post("/input-batch",response_model=BatchResponse)
+async def input_batch(data: BatchInput):
+    return BatchResponse(
+        batch_no=data.batch_no,reject_qty=data.reject_qty,qc_status=data.qc_status,message="data diterima"
+    )
