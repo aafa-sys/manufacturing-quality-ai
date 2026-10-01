@@ -1,5 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,HTTPException
 app = FastAPI()
+from pydantic import BaseModel
+
+allowed = {"PASS","FAIL","REWORK"}
 
 @app.get("/")
 async def root():
@@ -14,16 +17,11 @@ def get_batches(shift: str = None, line: int = None):
 
     return {"shift": shift, "line": line}
 
-from pydantic import BaseModel
 
 class BatchInput(BaseModel):
     batch_no: str
     reject_qty: int
     qc_status: str
-
-@app.post("/input-batch")
-async def input_batch(data: BatchInput):
-    return {"received":data.batch_no,"reject":data.reject_qty,"qc_status":data.qc_status} 
 
 class BatchResponse(BaseModel):
     batch_no: str
@@ -33,6 +31,17 @@ class BatchResponse(BaseModel):
 
 @app.post("/input-batch",response_model=BatchResponse)
 async def input_batch(data: BatchInput):
+    if data.reject_qty < 0:
+        raise HTTPException(status_code=400,detail="reject no negatif")
+    
+    if data.qc_status not in allowed :
+        raise HTTPException(status_code=400,detail="qc status harus sesuai di allowed")
+
+    if not data.batch_no.strip():
+        raise HTTPException(status_code=400,detail="batch_no tidak boleh kosong")
+
     return BatchResponse(
-        batch_no=data.batch_no,reject_qty=data.reject_qty,qc_status=data.qc_status,message="data diterima"
-    )
+       batch_no=data.batch_no,
+       reject_qty=data.reject_qty,
+       qc_status=data.qc_status,
+       message="Data diterima")
