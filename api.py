@@ -1,5 +1,6 @@
 from fastapi import FastAPI,HTTPException
 app = FastAPI()
+import db
 from pydantic import BaseModel
 
 allowed = {"PASS","FAIL","REWORK"}
@@ -45,3 +46,12 @@ async def input_batch(data: BatchInput):
        reject_qty=data.reject_qty,
        qc_status=data.qc_status,
        message="Data diterima")
+
+@app.get("/batches/db")
+async def get_batch_from_db():
+    conn = db.get_connection()
+    try:
+        data= db.fetch_all_batches(conn)
+        return {"total":len(data),"batches":data}
+    finally:
+        conn.close()
