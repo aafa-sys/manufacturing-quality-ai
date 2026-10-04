@@ -174,7 +174,7 @@ def normalisasi_batch(batch_str):
 def verifikasi_deteksi_batch(problematic_batches, analysis):
     """
     Cek apakah AI mendeteksi semua batch bermasalah.
-    Pakai normalisasi biar format B000009 dan BT26G009 dianggap sama.
+    Pakai normalisasi biar format B000009 dan BT26G009 dianggap sama
     """
     batch_seharusnya = set(normalisasi_batch(row[1]) for row in problematic_batches)
     batch_dideteksi = set(normalisasi_batch(qc.batch) for qc in analysis.prioritas_qc)

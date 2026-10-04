@@ -203,6 +203,7 @@ def jalankan_analisis(conn):
         status=decision.status.value,
         )
     logger.info(f"Metrik dicatat ke runs.csv")
+    return analisis,decision,kpi
     
 
         
