@@ -55,3 +55,21 @@ async def get_batch_from_db():
         return {"total":len(data),"batches":data}
     finally:
         conn.close()
+
+@app.get("/rejects/db")
+async def get_reject_from_db():
+    conn = db.get_connection()
+    try:
+        data = db.fetch_reject_details(conn)
+        return{"total":len(data),"reject":(data)}
+    finally:
+        conn.close()
+
+@app.get("/problematic/db")
+async def get_problematic_from_db(threshold: int=19):
+    conn = db.get_connection()
+    try:
+        data = db.fetch_problematic_batches(conn,threshold)
+        return{"total":len(data),"problematic":data}
+    finally:
+        conn.close()
