@@ -1,6 +1,7 @@
 from fastapi import FastAPI,HTTPException
 app = FastAPI()
 import db
+import analisis
 from pydantic import BaseModel
 
 allowed = {"PASS","FAIL","REWORK"}
@@ -73,3 +74,14 @@ async def get_problematic_from_db(threshold: int=19):
         return{"total":len(data),"problematic":data}
     finally:
         conn.close()
+
+@app.get("/kpi")
+async def get_kpi_from_analisis():
+    conn = db.get_connection()
+    try:
+        data = db.fetch_all_batches(conn)
+        kpi,_ = analisis.hitung_kpi(data)
+        return kpi
+    finally:
+        conn.close()
+

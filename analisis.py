@@ -138,7 +138,31 @@ def ringkas_semua_batch(all_batch_data, bottom_n=5):
     }
 
 
-
+def hitung_kpi(all_batch_data):
+    reject_rates = calculate_reject_rates(all_batch_data)
+    total_batches = calculate_total_batches(all_batch_data)
+    total_reject = calculate_total_reject(all_batch_data)
+    total_actual = calculate_total_actual(all_batch_data)
+    total_plan = calculate_total_plan(all_batch_data)
+    avg_reject = calculate_average_reject(total_reject, total_batches)
+    overall_rate = calculate_overall_reject_rate(total_reject, total_actual)
+    status = evaluate_reject_rate(overall_rate)
+    
+  
+    worst_batch_rate,worst_rate_value,valid_count = find_worst_batch_by_rate(all_batch_data)
+    qc_priority = calculate_qc_priority(worst_rate_value)
+    kpi = {
+                "total_batch": total_batches,
+                "total_reject": total_reject,
+                "total_actual": total_actual,
+                "total_plan": total_plan,
+                "avg_reject": avg_reject,
+                "reject_rate": overall_rate,
+                "reject_status": status,
+                "qc_priority": qc_priority,
+                "worst_reject_rate": worst_rate_value if worst_rate_value else 0.0,
+            }
+    return kpi,reject_rates
 
 
 def normalisasi_batch(batch_str):

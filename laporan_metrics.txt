@@ -1,10 +1,10 @@
 
 === LAPORAN METRICS ===
 
-Total Run      : 36
-Rata-rata Biaya: Rp 51.44
-Total Biaya    : Rp 1851.73
+Total Run      : 37
+Rata-rata Biaya: Rp 51.95
+Total Biaya    : Rp 1921.97
 
 --- Perbandingan Versi ---
-v2: 34 run, Rp 49.87/run, 17.0 batch
+v2: 35 run, Rp 50.45/run, 17.1 batch
 v3: 2 run, Rp 78.12/run, 23.0 batch
