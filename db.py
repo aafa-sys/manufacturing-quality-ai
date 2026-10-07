@@ -1,6 +1,7 @@
 import psycopg2
 from config import DB_CONFIG
 from exceptions import DatabaseError
+import json
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
 import logging
@@ -75,11 +76,47 @@ def insert_decision_log(conn, decision, analisis, kpi):
                 analisis.kesimpulan,
                 json.dumps(kpi),
             ))
-        conn.commit()
-        return True
+            conn.commit()
+            return True
     except Exception as e:
         conn.rollback()
         # Log error kalau perlu
         import logging
         logging.getLogger(__name__).error(f"Gagal insert decision_log: {e}")
         return False
+def insert_analysis_log(conn,kesimpulan,status,kpi):
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                INSERT INTO analysis_log
+                   (kesimpulan,status,kpi)
+                   VALUES(%s,%s,%s)
+                   RETURNING analysis_id """,(
+            kesimpulan,
+            status,
+            json.dumps(kpi)
+                   ))
+            id_baru = cur.fetchone()[0]
+            conn.commit()
+            return id_baru
+    except Exception as e:
+        conn.rollback()
+        import logging
+        logging.getLogger(__name__).error(f"Gagal insert analysis log : {e}")
+        return  None
+
+def fetch_analysis(conn,analysis_id):
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+            SELECT analysis_id,kesimpulan,status,kpi,created_at
+            FROM analysis_log
+            WHERE analysis_id = %s""",(analysis_id,))
+
+        
+            return cur.fetchone()
+    except Exception as e:
+       
+        logging.getLogger(__name__).error(f"gagal fetch analys :{e}")
+        return None
+     

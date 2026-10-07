@@ -93,10 +93,29 @@ async def get_analyze_from_analisis():
     conn = db.get_connection()
     try:
         analisis,decision,kpi = main.jalankan_analisis(conn)
-        return {"kesimpulan":analisis.kesimpulan,
+        id_baru = db.insert_analysis_log(conn,analisis.kesimpulan,decision.status.value,kpi)
+        return {"id":id_baru,
+                "kesimpulan":analisis.kesimpulan,
                 "status": decision.status.value,
                 "kpi":kpi}
     except Exception as e:
         return {"status":"error","message":str(e)}
+    finally:
+        conn.close()
+
+@app.get("/analyze/{analysis_id}")
+async def get_fetch_analyze_from_db(analysis_id : int):
+    conn = db.get_connection()
+    try:
+        data = db.fetch_analysis(conn,analysis_id)
+        if not data:
+            raise HTTPException(404,"data harus ada")
+        return{
+            "id" : data[0],
+            "kesimpulan" : data[1],
+            "status" : data[2],
+            "kpi" : data[3],
+            "created_at" : data[4],
+        }
     finally:
         conn.close()
