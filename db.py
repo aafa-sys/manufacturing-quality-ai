@@ -119,4 +119,18 @@ def fetch_analysis(conn,analysis_id):
        
         logging.getLogger(__name__).error(f"gagal fetch analys :{e}")
         return None
+
+def fetch_all_analysis(conn):
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+            SELECT analysis_id,kesimpulan,status,kpi,created_at
+            FROM analysis_log
+            order by analysis_id DESC """)
+
+            return cur.fetchall()
+    except Exception as e:
+
+        logging.getLogger(__name__).error(f"gagal fetch all analysis:{e}")
+        return None
      

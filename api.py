@@ -119,3 +119,29 @@ async def get_fetch_analyze_from_db(analysis_id : int):
         }
     finally:
         conn.close()
+
+
+@app.get("/analyze")
+async def get_all_analysis_from_db():
+    conn = db.get_connection()
+    try:
+        data = db.fetch_all_analysis(conn)   
+        if not data:
+            return {"total": 0, "analyses": []}
+        
+        analyses = []                         
+        for row in data:                      
+            analyses.append({
+                "id": row[0],
+                "kesimpulan": row[1],
+                "status": row[2],
+                "kpi": row[3],
+                "created_at": row[4],
+            })
+        
+        return {
+            "total": len(analyses),
+            "analyses": analyses
+        }
+    finally:
+        conn.close()
