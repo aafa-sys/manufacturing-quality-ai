@@ -1,9 +1,13 @@
-from fastapi import FastAPI,HTTPException
-app = FastAPI()
+from fastapi import FastAPI,HTTPException,Request
 import db
 import analisis
 import main
 from pydantic import BaseModel
+import time
+import logging
+app = FastAPI()
+rate_limit_store = {} 
+logger = logging.getLogger(__name__)
 
 allowed = {"PASS","FAIL","REWORK"}
 
@@ -26,11 +30,27 @@ class BatchInput(BaseModel):
     reject_qty: int
     qc_status: str
 
+
+
+
 class BatchResponse(BaseModel):
     batch_no: str
     reject_qty : int
     qc_status : str
     message : str
+
+def cek_rate_limit(ip,max_request=5,window_detik=60):
+    sekarang = time.time()
+    riwayat = rate_limit_store.get(ip,[])
+    riwayat = [w for w in riwayat if sekarang - w < window_detik]  
+
+
+    if len(riwayat) >= max_request:
+        return False
+
+    riwayat.append(sekarang)
+    rate_limit_store[ip] = riwayat 
+    return True
 
 @app.post("/input-batch",response_model=BatchResponse)
 async def input_batch(data: BatchInput):
@@ -89,37 +109,33 @@ async def get_kpi_from_analisis():
 
 
 @app.post("/analyze")
-async def get_analyze_from_analisis():
+async def get_analyze_from_analisis(request : Request):
     conn = db.get_connection()
     try:
+       
+        client_ip = request.client.host
+        waktu_mulai = time.time()
+        logger.info(f"Request dari {client_ip} - mulai")
+        if not cek_rate_limit(client_ip):
+            raise HTTPException(429, "Terlalu banyak request. Coba lagi nanti.")
+        
         analisis,decision,kpi = main.jalankan_analisis(conn)
         id_baru = db.insert_analysis_log(conn,analisis.kesimpulan,decision.status.value,kpi)
+        durasi = time.time()- waktu_mulai
+        logger.info(f"Request dari {client_ip} selesai dalam {durasi:.2f} detik")
+                
         return {"id":id_baru,
                 "kesimpulan":analisis.kesimpulan,
                 "status": decision.status.value,
                 "kpi":kpi}
+            
     except Exception as e:
+        durasi = time.time()- waktu_mulai
+        logger.error(f"Request dari {client_ip} - error setelah {durasi:.2f} detik: {e}")
         return {"status":"error","message":str(e)}
     finally:
         conn.close()
-
-@app.get("/analyze/{analysis_id}")
-async def get_fetch_analyze_from_db(analysis_id : int):
-    conn = db.get_connection()
-    try:
-        data = db.fetch_analysis(conn,analysis_id)
-        if not data:
-            raise HTTPException(404,"data harus ada")
-        return{
-            "id" : data[0],
-            "kesimpulan" : data[1],
-            "status" : data[2],
-            "kpi" : data[3],
-            "created_at" : data[4],
-        }
-    finally:
-        conn.close()
-
+        
 
 @app.get("/analyze")
 async def get_all_analysis_from_db():
@@ -145,3 +161,27 @@ async def get_all_analysis_from_db():
         }
     finally:
         conn.close()
+
+
+
+
+
+
+@app.get("/analyze/{analysis_id}")
+async def get_fetch_analyze_from_db(analysis_id : int):
+    conn = db.get_connection()
+    try:
+        data = db.fetch_analysis(conn,analysis_id)
+        if not data:
+            raise HTTPException(404,"data harus ada")
+        return{
+            "id" : data[0],
+            "kesimpulan" : data[1],
+            "status" : data[2],
+            "kpi" : data[3],
+            "created_at" : data[4],
+        }
+    finally:
+        conn.close()
+
+
