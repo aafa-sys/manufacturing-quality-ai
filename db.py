@@ -1,4 +1,5 @@
 import psycopg2
+from datetime import date,datetime
 from config import DB_CONFIG
 from exceptions import DatabaseError
 import json
@@ -133,4 +134,57 @@ def fetch_all_analysis(conn):
 
         logging.getLogger(__name__).error(f"gagal fetch all analysis:{e}")
         return None
-     
+
+
+def insert_batch(conn, batch_no, product_code, product_name, shift, manufacturing_line, plan_qty):
+    try:
+        hari_ini = date.today()
+        sekarang = datetime.now().timetz()
+        
+        with conn.cursor() as cur:
+        
+            cur.execute("""
+                SELECT batch_id FROM batch_production 
+                ORDER BY batch_id DESC 
+                LIMIT 1
+            """)
+            row = cur.fetchone()
+            
+           
+            if not row:
+                batch_id_baru = "B000001"
+            else:
+                angka = int(row[0][1:]) + 1
+                batch_id_baru = f"B{angka:06d}"
+            
+        
+            cur.execute("""
+                INSERT INTO batch_production 
+                    (batch_id, batch_no, product_code, product_name, 
+                     production_date, shift, start_time, end_time, 
+                     manufacturing_line, plan_qty)
+                VALUES 
+                    (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                RETURNING batch_id
+            """, (
+                batch_id_baru,     
+                batch_no,          
+                product_code, 
+                product_name,
+                hari_ini, 
+                shift, 
+                sekarang, 
+                sekarang,
+                manufacturing_line, 
+                plan_qty, 
+                
+            ))
+            id_baru = cur.fetchone()[0]
+        
+        conn.commit()
+        return id_baru
+    except Exception as e:
+        conn.rollback()
+        print(f"DEBUG ERROR: {e}")
+        logging.getLogger(__name__).error(f"Gagal insert batch: {e}")
+        return None

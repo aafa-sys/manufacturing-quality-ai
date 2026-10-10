@@ -27,16 +27,18 @@ def get_batches(shift: str = None, line: int = None):
 
 class BatchInput(BaseModel):
     batch_no: str
-    reject_qty: int
-    qc_status: str
-
+    product_code : str
+    product_name : str
+    shift : str
+    manufacturing_line : str
+    plan_qty : int
+    
 
 
 
 class BatchResponse(BaseModel):
+    batch_id : str
     batch_no: str
-    reject_qty : int
-    qc_status : str
     message : str
 
 def cek_rate_limit(ip,max_request=5,window_detik=60):
@@ -52,22 +54,7 @@ def cek_rate_limit(ip,max_request=5,window_detik=60):
     rate_limit_store[ip] = riwayat 
     return True
 
-@app.post("/input-batch",response_model=BatchResponse)
-async def input_batch(data: BatchInput):
-    if data.reject_qty < 0:
-        raise HTTPException(status_code=400,detail="reject no negatif")
-    
-    if data.qc_status not in allowed :
-        raise HTTPException(status_code=400,detail="qc status harus sesuai di allowed")
 
-    if not data.batch_no.strip():
-        raise HTTPException(status_code=400,detail="batch_no tidak boleh kosong")
-
-    return BatchResponse(
-       batch_no=data.batch_no,
-       reject_qty=data.reject_qty,
-       qc_status=data.qc_status,
-       message="Data diterima")
 
 @app.get("/batches/db")
 async def get_batch_from_db():
@@ -184,4 +171,39 @@ async def get_fetch_analyze_from_db(analysis_id : int):
     finally:
         conn.close()
 
+@app.post("/input-batch", response_model=BatchResponse)
+async def input_batch(data: BatchInput):
+    
+    
+    if not data.batch_no.strip():
+        raise HTTPException(status_code=400,detail="batch_no tidak boleh kosong")
+    
+    
+    conn = db.get_connection()
+    try:
+      
+        id_baru = db.insert_batch(
+            conn,
+            data.batch_no,
+            data.product_code,
+            data.product_name,
+            data.shift,
+            data.manufacturing_line,
+            data.plan_qty,
+            
+        )
+
+        if not id_baru:
+            raise HTTPException(500, "Gagal menyimpan data ke database")
+
+
+        
+       
+        return BatchResponse(
+            batch_id = id_baru,
+            batch_no=data.batch_no,
+            message=f"Data tersimpan dengan ID {id_baru}"
+        )
+    finally:
+        conn.close()
 
