@@ -3,13 +3,14 @@ import db
 import analisis
 import main
 from pydantic import BaseModel
+from typing import Literal
 import time
 import logging
 app = FastAPI()
 rate_limit_store = {} 
 logger = logging.getLogger(__name__)
 
-allowed = {"PASS","FAIL","REWORK"}
+allowed = {"PASS","FAIL","REWORK","HOLD"}
 
 @app.get("/")
 async def root():
@@ -40,6 +41,11 @@ class BatchResponse(BaseModel):
     batch_id : str
     batch_no: str
     message : str
+
+class BatchUpdate(BaseModel):
+    actual_qty : int
+    reject_qty : int
+    qc_status : Literal["PASS","FAIL","REWORK","HOLD"]
 
 def cek_rate_limit(ip,max_request=5,window_detik=60):
     sekarang = time.time()
@@ -235,5 +241,34 @@ async def get_produk_from_db():
  
     finally:
         conn.close()
+
+
+@app.put("/batch/{batch_id}")
+async def update_batch_endpoint(batch_id: str,data:BatchUpdate):
+    conn = db.get_connection()
+
+    try:
+        hasil = db.update_batch(conn,batch_id,data.actual_qty,data.reject_qty,data.qc_status)
+
+        if not hasil:
+            raise HTTPException(404,"batch tidak di temukan")
+
+        batch = db.fetch_batch(conn,batch_id)
+
+        return{
+            "batch_id" : batch[0],
+            "batch_no" : batch[1],
+            "product_code": batch[2],
+            "product_name": batch[3],
+            "shift" : batch[4],
+            "manufacturing_line" : batch[5],
+            "plan_qty" : batch[6],
+            "actual_qty": batch[7],
+            "reject_qty" : batch[8],
+            "qc_status" : batch[9],
+        }
+    finally:
+        conn.close()
+
 
 

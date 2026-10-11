@@ -203,4 +203,39 @@ def fetch_all_products(conn):
     except Exception as e:
         logging.getLogger(__name__).error(f"gagal fetch all products:{e}")
         return None
+
+
         
+def update_batch(conn,batch_id,actual_qty,reject_qty,qc_status):
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                        UPDATE batch_production 
+                        SET actual_qty = %s ,reject_qty = %s,qc_status = %s
+                        WHERE batch_id = %s
+                        RETURNING batch_id""",(actual_qty,reject_qty,qc_status,batch_id))
+            row = cur.fetchone()
+            if not row:
+                return None
+            id_baru = row[0]
+
+        conn.commit()
+        return id_baru
+    except Exception as e:
+        conn.rollback()  
+        print(f" DEBUG ERROR : {e}")   
+        logging.getLogger(__name__).error(f"gagal update batch :{e}")    
+        return None        
+
+
+def fetch_batch(conn,batch_id):
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""SELECT batch_id,batch_no,product_code,product_name,shift,manufacturing_line,
+                       plan_qty,actual_qty,reject_qty,qc_status
+                       FROM batch_production
+                       WHERE batch_id = %s""",(batch_id,))
+            return cur.fetchone()
+    except Exception as e:
+        logging.getLogger(__name__).error(f"gagal fetch batch :{e}")
+        return None
