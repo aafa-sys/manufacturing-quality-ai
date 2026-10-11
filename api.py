@@ -207,3 +207,33 @@ async def input_batch(data: BatchInput):
     finally:
         conn.close()
 
+@app.get("/products/db")
+async def get_produk_from_db():
+    conn = db.get_connection()
+    try:
+        data= db.fetch_all_products(conn)
+
+                  
+        if not data :
+            return {"total" : 0,"products" : []}
+        
+
+        products = []
+        for row in data :
+            products.append ({
+                "produk_code": row[0],
+                "produk_name":row[1],
+                "category":row[2],
+                "form": row[3],
+                "strength":row[4],
+                "unit":row[5],
+                "manufacturing_line":row[6],})
+
+        return{
+            "total" : len(products),
+            "products" : products }
+ 
+    finally:
+        conn.close()
+
+

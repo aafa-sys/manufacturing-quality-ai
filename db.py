@@ -188,3 +188,19 @@ def insert_batch(conn, batch_no, product_code, product_name, shift, manufacturin
         print(f"DEBUG ERROR: {e}")
         logging.getLogger(__name__).error(f"Gagal insert batch: {e}")
         return None
+
+
+def fetch_all_products(conn):
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT produk_code,produk_name,category,form,strength,unit,manufacturing_line
+                FROM master_produk
+                WHERE status = 'Active'
+                ORDER BY produk_code""")
+
+            return cur.fetchall()
+    except Exception as e:
+        logging.getLogger(__name__).error(f"gagal fetch all products:{e}")
+        return None
+        
