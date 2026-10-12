@@ -239,3 +239,24 @@ def fetch_batch(conn,batch_id):
     except Exception as e:
         logging.getLogger(__name__).error(f"gagal fetch batch :{e}")
         return None
+
+
+def delete_batch(conn,batch_id):
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""DELETE FROM batch_production
+                        WHERE batch_id = %s
+                        RETURNING batch_id""",(batch_id,))
+
+            row = cur.fetchone()
+
+            if not row:
+                return None
+            id_baru = row[0]
+
+        conn.commit()
+        return id_baru
+    except Exception as e:
+        conn.rollback()
+        print(f" DEBUG ERROR : {e}")
+        return None
