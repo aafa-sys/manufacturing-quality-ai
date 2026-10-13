@@ -1,4 +1,5 @@
-from fastapi import FastAPI,HTTPException,Request
+from fastapi import FastAPI,HTTPException,Request,Header,Depends
+import os
 import db
 import analisis
 import main
@@ -8,6 +9,15 @@ import time
 import logging
 app = FastAPI()
 rate_limit_store = {} 
+
+def verify_api_key(x_api_key :str = Header(...)):
+    expected = os.getenv("API_KEY")
+
+    if x_api_key != expected:
+        raise HTTPException(401,"API key tidak valid")
+
+    return x_api_key
+
 logger = logging.getLogger(__name__)
 
 allowed = {"PASS","FAIL","REWORK","HOLD"}
@@ -102,7 +112,9 @@ async def get_kpi_from_analisis():
 
 
 @app.post("/analyze")
-async def get_analyze_from_analisis(request : Request):
+async def get_analyze_from_analisis(request : Request,api_key: str=Depends(verify_api_key)):
+
+    
     conn = db.get_connection()
     try:
        
@@ -178,7 +190,7 @@ async def get_fetch_analyze_from_db(analysis_id : int):
         conn.close()
 
 @app.post("/input-batch", response_model=BatchResponse)
-async def input_batch(data: BatchInput):
+async def input_batch(data: BatchInput,api_key: str=Depends(verify_api_key)):
     
     
     if not data.batch_no.strip():
@@ -244,7 +256,7 @@ async def get_produk_from_db():
 
 
 @app.put("/batch/{batch_id}")
-async def update_batch_endpoint(batch_id: str,data:BatchUpdate):
+async def update_batch_endpoint(batch_id: str,data:BatchUpdate,api_key: str=Depends(verify_api_key)):
     conn = db.get_connection()
 
     try:
@@ -271,7 +283,7 @@ async def update_batch_endpoint(batch_id: str,data:BatchUpdate):
         conn.close()
 
 @app.delete("/batch/{batch_id}")
-async def soft_delete_batch_from_db(batch_id : str):
+async def soft_delete_batch_from_db(batch_id : str,api_key: str=Depends(verify_api_key)):
     conn = db.get_connection()
     try:
         hasil = db.soft_delete_batch(conn,batch_id)
@@ -281,6 +293,4 @@ async def soft_delete_batch_from_db(batch_id : str):
         return{"message" : f"batch {hasil} berhasil di hapus"}
     finally:
         conn.close()
-
-
 
