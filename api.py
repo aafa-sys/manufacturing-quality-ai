@@ -271,10 +271,10 @@ async def update_batch_endpoint(batch_id: str,data:BatchUpdate):
         conn.close()
 
 @app.delete("/batch/{batch_id}")
-async def delete_batch_from_db(batch_id : str):
+async def soft_delete_batch_from_db(batch_id : str):
     conn = db.get_connection()
     try:
-        hasil = db.delete_batch(conn,batch_id)
+        hasil = db.soft_delete_batch(conn,batch_id)
         if not hasil:
             raise HTTPException(404,"batch delete tidak di temukan")
 

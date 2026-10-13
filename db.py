@@ -30,6 +30,7 @@ def fetch_all_batches(conn):
                    manufacturing_line, plan_qty, actual_qty,
                    reject_qty, qc_status
             FROM batch_production
+            WHERE status != 'DELETED'
         """)
         return cur.fetchall()
 
@@ -52,6 +53,7 @@ def fetch_problematic_batches(conn, threshold=19):
                    reject_qty, qc_status
             FROM batch_production
             WHERE reject_qty > %s
+            AND status != 'DELETED'
             ORDER BY reject_qty DESC
         """, (threshold,))
         return cur.fetchall()
@@ -252,11 +254,30 @@ def delete_batch(conn,batch_id):
 
             if not row:
                 return None
-            id_baru = row[0]
+            id_deleted= row[0]
 
         conn.commit()
-        return id_baru
+        return id_deleted
     except Exception as e:
         conn.rollback()
         print(f" DEBUG ERROR : {e}")
+        return None
+
+def soft_delete_batch(conn,batch_id):
+    try:
+        with conn.cursor() as cur:
+            cur.execute(""" UPDATE batch_production
+                        SET status = 'DELETED'
+                        WHERE batch_id = %s
+                        RETURNING batch_id""",(batch_id,))
+            row = cur.fetchone()
+
+            if not row:
+                return None
+            id_dihapus = row[0]
+        conn.commit()
+        return id_dihapus
+    except Exception as e:
+        conn.rollback()
+        print(f"DEBUG ERROR : {e}")
         return None
