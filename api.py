@@ -1,4 +1,5 @@
 from fastapi import FastAPI,HTTPException,Request,Header,Depends
+from fastapi.middleware.cors import CORSMiddleware
 import os
 import db
 import analisis
@@ -10,6 +11,20 @@ import logging
 app = FastAPI()
 rate_limit_store = {} 
 
+origins = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,         
+    allow_credentials=True,
+    allow_methods=["*"],           
+    allow_headers=["*"],          
+)
 def verify_api_key(x_api_key :str = Header(...)):
     expected = os.getenv("API_KEY")
 
