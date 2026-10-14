@@ -42,8 +42,26 @@ async def root():
     return {"message": "Hello World"}
 
 @app.get("/batch/{batch_id}")
-async def ambil_batch(batch_id: int):
-    return {"batch_id":batch_id,"message":"data batch ini"}
+async def ambil_batch(batch_id: str):
+    conn = db.get_connection()
+    try:
+        data = db.fetch_batch(conn,batch_id)
+        if not data:
+            raise HTTPException(404,"batch tidak di temukan")
+
+        
+        return {"batch_id": data[0],
+                "batch_no" : data[1],
+                "product_code": data[2],
+                "product_name": data[3],
+                "shift": data[4],
+                "manufacturing_line": data[5],
+                "plan_qty":data[6],
+                "actual_qty": data[7],
+                "reject_qty": data[8],
+                "qc_status": data[9],}
+    finally:
+        conn.close()
 
 @app.get("/batches")
 def get_batches(shift: str = None, line: int = None):

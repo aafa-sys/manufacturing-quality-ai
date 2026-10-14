@@ -236,7 +236,9 @@ def fetch_batch(conn,batch_id):
             cur.execute("""SELECT batch_id,batch_no,product_code,product_name,shift,manufacturing_line,
                        plan_qty,actual_qty,reject_qty,qc_status
                        FROM batch_production
-                       WHERE batch_id = %s""",(batch_id,))
+                       WHERE batch_id = %s
+                       AND status != 'DELETED'
+                       """,(batch_id,))
             return cur.fetchone()
     except Exception as e:
         logging.getLogger(__name__).error(f"gagal fetch batch :{e}")
