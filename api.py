@@ -1,4 +1,4 @@
-from fastapi import FastAPI,HTTPException,Request,Header,Depends
+from fastapi import FastAPI,HTTPException,Request,Header,Depends,Query
 from fastapi.middleware.cors import CORSMiddleware
 import os
 import db
@@ -106,11 +106,23 @@ def cek_rate_limit(ip,max_request=5,window_detik=60):
 
 
 @app.get("/batches/db")
-async def get_batch_from_db():
+async def get_batch_from_db(page : int= Query(1,ge=1),limit :int =Query(10,ge=1, le=100)):
     conn = db.get_connection()
     try:
-        data= db.fetch_all_batches(conn)
-        return {"total":len(data),"batches":data}
+
+        offset = (page-1) * limit
+
+        data= db.fetch_all_batches(conn,limit,offset)
+
+        total = db.count_batch(conn)
+
+
+        return {
+            
+            "total":total,
+            "page": page,
+            "limit" : limit,
+            "batches":data }
     finally:
         conn.close()
 

@@ -22,7 +22,7 @@ def get_connection():
         logger.error(f"Database connection failed: {e}")
         raise DatabaseError(f"Tidak bisa koneksi ke database: {e}")
 
-def fetch_all_batches(conn):
+def fetch_all_batches(conn,limit =97,offset=0):
     """Ambil semua data batch_production."""
     with conn.cursor() as cur:
         cur.execute("""
@@ -31,8 +31,20 @@ def fetch_all_batches(conn):
                    reject_qty, qc_status
             FROM batch_production
             WHERE status != 'DELETED'
-        """)
+            ORDER BY batch_id
+            LIMIT %s OFFSET %s
+
+        """,(limit,offset))
         return cur.fetchall()
+
+def count_batch(conn):
+    with conn.cursor() as cur:
+        cur.execute("""
+                    SELECT COUNT(*) FROM  batch_production
+                    WHERE status != 'DELETED'
+                    """)
+
+        return cur.fetchone()[0]
 
 def fetch_reject_details(conn):
     """Ambil semua data reject_detail."""
@@ -283,3 +295,4 @@ def soft_delete_batch(conn,batch_id):
         conn.rollback()
         print(f"DEBUG ERROR : {e}")
         return None
+
