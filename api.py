@@ -1,5 +1,6 @@
 from fastapi import FastAPI,HTTPException,Request,Header,Depends,Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 import os
 import db
 import analisis
@@ -25,6 +26,18 @@ app.add_middleware(
     allow_methods=["*"],           
     allow_headers=["*"],          
 )
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request:Request,exc:Exception):
+    logger.error(f"Error di {request.url}: {exc}")
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error" :True,
+            "message": "terjadi kesalahan server",
+            "status_code": 500
+        }
+    )
 def verify_api_key(x_api_key :str = Header(...)):
     expected = os.getenv("API_KEY")
 
