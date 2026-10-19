@@ -1,27 +1,23 @@
 import db
 
-TOOLS = [ ]
-
 def tool_get_batch(batch_id: str) :
-    """Fungsi untuk mengambil data batch dari database"""
-
+    """Mengambil data batch dari database berdasarkan ID."""
     conn = db.get_connection()
     try:
-        data = db.fetch_batch(conn,batch_id)
-
+        data = db.fetch_batch(conn, batch_id)
         if not data:
-            return f"batch{batch_id} tidak di temukan"
-
-        return f"batch:{data[1]}, produk: {data[3]}, plan: {data[6]}, actual: {data[7]}, reject: {data[8]}, status: {data[9]}"
-
+            return f"Batch {batch_id} tidak ditemukan."
+        
+        return f"Batch: {data[1]}, Produk: {data[3]}, Plan: {data[6]}, Actual: {data[7]}, Reject: {data[8]}, Status: {data[9]}"
     except Exception as e:
         return f"Error: {e}"
-
     finally:
         conn.close()
 
-TOOLS =[
-    {"name" : "tool_get_batch",
-     "funtion" : tool_get_batch,
-     "description" : "ambil data batch berdasarkan ID "}
+TOOLS = [
+    {
+        "name": "tool_get_batch",
+        "function": tool_get_batch, 
+        "description": "Ambil data batch berdasarkan ID (contoh: B000001)."
+    }
 ]
