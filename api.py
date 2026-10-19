@@ -352,3 +352,7 @@ async def soft_delete_batch_from_db(batch_id : str,api_key: str=Depends(verify_a
     finally:
         conn.close()
 
+
+
+
+
