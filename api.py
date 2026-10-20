@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from typing import Literal
 import time
 import logging
+from agent.agent import jalankan_agent
 app = FastAPI()
 rate_limit_store = {} 
 
@@ -102,6 +103,10 @@ class BatchUpdate(BaseModel):
     actual_qty : int
     reject_qty : int
     qc_status : Literal["PASS","FAIL","REWORK","HOLD"]
+
+
+class AgentRequest(BaseModel):
+    pertanyaan : str
 
 def cek_rate_limit(ip,max_request=5,window_detik=60):
     sekarang = time.time()
@@ -352,6 +357,13 @@ async def soft_delete_batch_from_db(batch_id : str,api_key: str=Depends(verify_a
     finally:
         conn.close()
 
+@app.post("/agent/chat")
+async def chat_dengan_agent(data: AgentRequest,api_key:str = Depends(verify_api_key)):
+    try :
+        hasil = jalankan_agent(data.pertanyaan)
+        return {"hasil_request" : hasil}
+    except Exception as e:
+        raise HTTPException(500,str(e))
 
 
 

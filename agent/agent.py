@@ -8,7 +8,7 @@ from agent.prompts import SYSTEM_PROMPT
 load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-def jalankan_agent(pertanyaan_user: str) -> str:
+def jalankan_agent(pertanyaan_user: str) :
     # 1. Siapkan deklarasi tools (format library baru)
     function_declarations = [
         types.FunctionDeclaration(
