@@ -17,10 +17,20 @@ def jalankan_agent(pertanyaan_user: str) :
             parameters_json_schema={
                 "type": "object",
                 "properties": {
-                    "batch_id": {"type": "string", "description": "ID batch, contoh: B000001"}
-                },
-                "required": ["batch_id"]
+                    "batch_id": {"type": "string", "description": "ID batch, contoh: B000001"},
+
+
+                    "threshold": {
+                                    "type": "integer",
+                                    "description":"batas minimal reject (20)"
+            
+                
             }
+         
+            }
+            }
+            
+        
         ) for tool in TOOLS
     ]
     tools = [types.Tool(function_declarations=function_declarations)]

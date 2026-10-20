@@ -14,10 +14,44 @@ def tool_get_batch(batch_id: str) :
     finally:
         conn.close()
 
+
+
+def tool_get_problematic(threshold :int = 20):
+    "mengaambil batch bermasalah dengan reject di atas 20 bisa dicustom thresholdnya"
+    conn = db.get_connection()
+
+    try:
+        
+
+        data = db.fetch_problematic_batches(conn,threshold)
+        if not data:
+            return f"tidak ada batch bermasalah > {threshold} "
+
+        daftar_batch = []
+        for row in data:
+            teks = f" batch_no {row[1]}, produk {row[2]}, reject {row[7]}"
+            daftar_batch.append(teks)
+
+        hasil = f"ditemukan {len(data)} batch bermaslah(reject > {threshold}):\n"
+        hasil += "\n".join(daftar_batch)
+
+        return hasil
+        
+
+      
+    except Exception as e:
+        return f"Error: {e}"
+    finally:
+        conn.close()
+
 TOOLS = [
     {
         "name": "tool_get_batch",
         "function": tool_get_batch, 
         "description": "Ambil data batch berdasarkan ID (contoh: B000001)."
-    }
+    },
+
+    {"name": "tool_get_problematic",
+     "function": tool_get_problematic,
+     "description" : "mengambil batch yang bermasalah dengan reject di atas 20"}
 ]
