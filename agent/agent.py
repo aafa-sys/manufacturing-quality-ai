@@ -9,28 +9,16 @@ load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 def jalankan_agent(pertanyaan_user: str) :
-    # 1. Siapkan deklarasi tools (format library baru)
     function_declarations = [
         types.FunctionDeclaration(
             name=tool["name"],
             description=tool["description"],
             parameters_json_schema={
                 "type": "object",
-                "properties": {
-                    "batch_id": {"type": "string", "description": "ID batch, contoh: B000001"},
-
-
-                    "threshold": {
-                                    "type": "integer",
-                                    "description":"batas minimal reject (20)"
-            
-                
+                "type": "object",
+                "properties": tool["parameters"],
+                "requiered": tool["required"]
             }
-         
-            }
-            }
-            
-        
         ) for tool in TOOLS
     ]
     tools = [types.Tool(function_declarations=function_declarations)]
@@ -82,7 +70,7 @@ def jalankan_agent(pertanyaan_user: str) :
     return response.text
 
 if __name__ == "__main__":
-    pertanyaan = "Tolong cek data batch B000001 dong, reject-nya berapa?"
+    pertanyaan = "Tolong cariin semua batch yang reject nya diatas 20"
     print("="*50)
     print("MENJALANKAN AI AGENT...")
     print("="*50)

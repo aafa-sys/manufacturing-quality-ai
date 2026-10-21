@@ -47,11 +47,26 @@ def tool_get_problematic(threshold :int = 20):
 TOOLS = [
     {
         "name": "tool_get_batch",
-        "function": tool_get_batch, 
-        "description": "Ambil data batch berdasarkan ID (contoh: B000001)."
+        "function": tool_get_batch,
+        "description": "Ambil data batch berdasarkan ID.",
+        "parameters": {
+            "batch_id": {
+                "type": "string", 
+                "description": "ID batch, contoh: B000001."
+            }
+        },
+        "required": ["batch_id"]
     },
-
-    {"name": "tool_get_problematic",
-     "function": tool_get_problematic,
-     "description" : "mengambil batch yang bermasalah dengan reject di atas 20"}
+    {
+        "name": "tool_get_problematic",
+        "function": tool_get_problematic,
+        "description": "Ambil semua batch bermasalah dengan reject di atas threshold.",
+        "parameters": {
+            "threshold": {
+                "type": "integer", 
+                "description": "Batas minimal reject."
+            }
+        },
+        "required": []  # Kosong karena parameter threshold di fungsi punya default (= 20)
+    }
 ]
