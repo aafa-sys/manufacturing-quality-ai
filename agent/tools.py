@@ -1,4 +1,5 @@
 import db
+from analisis import hitung_kpi
 
 def tool_get_batch(batch_id: str) :
     """Mengambil data batch dari database berdasarkan ID."""
@@ -41,6 +42,24 @@ def tool_get_problematic(threshold :int = 20):
       
     except Exception as e:
         return f"Error: {e}"
+    finally:
+        conn.close()
+
+
+def tool_get_kpi():
+    conn = db.get_connection()
+    try:
+        data = db.fetch_all_batches(conn)
+        if not data:
+            return f"tidak ada batch yang terdeteksi"
+        kpi,_ = hitung_kpi(data)
+
+
+
+        return f" daftar kpi produksi keseluruhan : {str(kpi)}"
+    except Exception as e:
+        return f"Error: {e}"
+
     finally:
         conn.close()
 
