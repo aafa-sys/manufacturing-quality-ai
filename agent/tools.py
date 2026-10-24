@@ -63,6 +63,36 @@ def tool_get_kpi():
     finally:
         conn.close()
 
+
+def tool_analyze_rejects():
+    conn = db.get_connection()
+    try:
+        data = db.fetch_reject_details(conn)
+        if not data:
+            return f"tidak ada reject"
+
+        rekap ={}
+        for row in data:
+            kategori = row[1]
+            qty = row[2]
+
+
+            if kategori in rekap:
+                rekap[kategori] += qty
+            else:
+                rekap[kategori] = qty
+        hasil_urut = sorted(rekap.items(),key=lambda x: x[1], reverse=True)
+
+        teks = "analisis kategori reject terbanyak:\n"
+        for kat,total in hasil_urut:
+            teks += f"- {kat}: {total} unit\n"
+
+        return teks
+    except Exception as e:
+        return f"error analisis {e}"
+    finally:
+        conn.close()
+
 TOOLS = [
     {
         "name": "tool_get_batch",
@@ -87,5 +117,23 @@ TOOLS = [
             }
         },
         "required": []  # Kosong karena parameter threshold di fungsi punya default (= 20)
-    }
+
+
+    },
+
+
+    {
+    "name": "tool_get_kpi",
+    "function": tool_get_kpi,
+    "description": "Ambil dan hitung KPI produksi keseluruhan (total batch, reject rate, dll).",
+    "parameters": {},
+    "required": []
+},
+{
+    "name": "tool_analyze_rejects",
+    "function": tool_analyze_rejects,
+    "description": "Gunakan ini untuk menganalisis kategori reject apa yang paling sering terjadi dan total unitnya.",
+    "parameters": {},
+    "required": []
+}
 ]

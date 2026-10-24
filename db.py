@@ -56,7 +56,7 @@ def fetch_reject_details(conn):
         """)
         return cur.fetchall()
 
-def fetch_problematic_batches(conn, threshold=19):
+def fetch_problematic_batches(conn, threshold=20):
     """Ambil batch dengan reject_qty > threshold."""
     with conn.cursor() as cur:
         cur.execute("""
