@@ -11,7 +11,7 @@ def tool_get_batch(batch_id: str) :
         
         return f"Batch: {data[1]}, Produk: {data[3]}, Plan: {data[6]}, Actual: {data[7]}, Reject: {data[8]}, Status: {data[9]}"
     except Exception as e:
-        return f"Error: {e}"
+        return f"Error:  {e}"
     finally:
         conn.close()
 
@@ -103,6 +103,17 @@ def tool_generate_report(report_content: str):
     except Exception as e:
         return f"gagal menyimpan laporan {e}"
 
+def tool_send_notification(penerima:str,pesan:str):
+    """simulasi mengirim notifikasi (email/wa)"""
+
+    try:
+
+        print(f"[NOTIF] mengirim ke{penerima}: {pesan}")
+        return f"notifikasi terkirim ke {penerima}"
+    except Exception as e:
+        return f"gagal mengirim notifikasi:{e}"
+    
+
 TOOLS = [
     {
         "name": "tool_get_batch",
@@ -157,5 +168,20 @@ TOOLS = [
             "description":"isi lengkap laporan yang akan di simpan"
         }
     },
-    "required": ["report_content"]}
+    "required": ["report_content"]},
+
+    {"name":"tool_send_notification",
+     "function":tool_send_notification,
+     "description":"mengirim atau pesanke orang lain",
+     "parameters":{
+         "penerima":{
+             "type": "string",
+             "description": "nama atau alamat email penerima"
+         },
+
+         "pesan":{
+             "type": "string",
+             "description": "isi pesan atau laporan yang mau di kirim "}
+     },
+     "required":["penerima","pesan"]}
 ]
