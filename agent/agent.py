@@ -99,7 +99,7 @@ def jalankan_agent(pertanyaan_user: str) :
     return response.text
 
 if __name__ == "__main__":
-    pertanyaan = "Tolong analisis kategori reject apa yang paling parah di pabrik ini"
+    pertanyaan = "Tolong analisis kategori reject apa yang paling parah di pabrik ini,lalu simpan hasil laporannya ke file"
     print("="*50)
     print("MENJALANKAN AI AGENT...")
     print("="*50)

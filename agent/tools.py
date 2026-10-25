@@ -93,6 +93,16 @@ def tool_analyze_rejects():
     finally:
         conn.close()
 
+def tool_generate_report(report_content: str):
+    nama_file = "laporan_manufaktur.txt"
+    try:
+        with open(nama_file, "w",encoding="utf-8") as f:
+            f.write(report_content)
+
+        return f"laporan berhasil di simpan di{nama_file}"
+    except Exception as e:
+        return f"gagal menyimpan laporan {e}"
+
 TOOLS = [
     {
         "name": "tool_get_batch",
@@ -128,12 +138,24 @@ TOOLS = [
     "description": "Ambil dan hitung KPI produksi keseluruhan (total batch, reject rate, dll).",
     "parameters": {},
     "required": []
-},
-{
+   },
+   {
     "name": "tool_analyze_rejects",
     "function": tool_analyze_rejects,
     "description": "Gunakan ini untuk menganalisis kategori reject apa yang paling sering terjadi dan total unitnya.",
     "parameters": {},
     "required": []
-}
+   },
+
+   {
+    "name":"tool_generate_report",
+    "function": tool_generate_report,
+    "description":"membuat laporan otomatis dan di simpan di file yang telah ditentukan.",
+    "parameters":{
+        "report_content": {
+            "type":"string",
+            "description":"isi lengkap laporan yang akan di simpan"
+        }
+    },
+    "required": ["report_content"]}
 ]
