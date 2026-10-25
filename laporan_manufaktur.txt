@@ -1,13 +1,16 @@
-Laporan Analisis Kategori Reject Pabrik
+LAPORAN ANALISIS REJECT PRODUKSI PABRIK
 
-Berdasarkan analisis data reject di pabrik, berikut adalah urutan kategori reject dari yang paling parah hingga terendah:
+1. Kategori Reject Paling Parah:
+   - Kategori Utama: Dent
+   - Jumlah Reject: 266 unit
 
-1. Dent: 266 unit (Kategori Paling Parah)
-2. Material defect: 251 unit
-3. Scratch: 237 unit
-4. Dimension: 229 unit
-5. Contamination: 213 unit
-6. Crack: 199 unit
+Rincian Kategori Reject:
+   - Dent: 266 unit
+   - Material defect: 251 unit
+   - Scratch: 237 unit
+   - Dimension: 229 unit
+   - Contamination: 213 unit
+   - Crack: 199 unit
 
-Kesimpulan:
-Kategori reject yang paling parah adalah **Dent** dengan jumlah 266 unit. Disusul oleh **Material defect** sebanyak 251 unit. Diperlukan penanganan dan inspeksi lebih lanjut pada area kerja terkait untuk mengurangi tingkat cacat tersebut.
+2. Rata-rata Reject:
+   - Rata-rata unit reject per batch: 13.86 unit (13.8557)

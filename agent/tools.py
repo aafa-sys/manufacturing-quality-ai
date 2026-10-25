@@ -112,6 +112,27 @@ def tool_send_notification(penerima:str,pesan:str):
         return f"notifikasi terkirim ke {penerima}"
     except Exception as e:
         return f"gagal mengirim notifikasi:{e}"
+
+def tool_get_avg_reject():
+    conn = db.get_connection()
+    try:
+        data =db.fetch_all_batches(conn)
+        if not data:
+            return f"tidak ada reject terdeteksi"
+
+        total_reject = 0
+        for row in data:
+            total_reject += row[7]
+
+
+
+        rata_rata = total_reject / len(data)
+        return f" rata_rata reject adalah {rata_rata} "
+    except Exception as e:
+        return f"gagal menghitung rata_rata {e}"
+    finally:
+        conn.close()
+
     
 
 TOOLS = [
@@ -183,5 +204,13 @@ TOOLS = [
              "type": "string",
              "description": "isi pesan atau laporan yang mau di kirim "}
      },
-     "required":["penerima","pesan"]}
+     "required":["penerima","pesan"]},
+
+
+    {"name":"tool_get_avg_reject",
+     "function": tool_get_avg_reject,
+     "description":"di gunakan untuk menghitung rata_rata reject",
+     "parameters":{},
+     "required": []
+    }
 ]
