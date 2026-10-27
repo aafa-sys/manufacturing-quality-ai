@@ -7,6 +7,9 @@ from agent.prompts import SYSTEM_PROMPT
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 from google.genai.errors import ServerError
 
+chat_history = []
+
+
 load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"),
                       http_options=types.HttpOptions(timeout=30_000))
@@ -39,17 +42,22 @@ def jalankan_agent(pertanyaan_user: str) :
     ]
     tools = [types.Tool(function_declarations=function_declarations)]
 
+    chat_history.append(types.Content(role="user",parts=[types.Part.from_text(text=pertanyaan_user)]))
+    
+
     # 2. Kirim pertanyaan ke Gemini
     print(f"[USER] {pertanyaan_user}")
+    
     response = panggil_gemini_aman(
         model="gemini-3.5-flash",
-        contents=pertanyaan_user,
+        contents=chat_history,
         config=types.GenerateContentConfig(
             system_instruction=SYSTEM_PROMPT,
             tools=tools,
             automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
         )
     )
+    
 
     # 3. Agent Loop
     while response.function_calls:
@@ -82,24 +90,22 @@ def jalankan_agent(pertanyaan_user: str) :
             )
             
         
-        response = panggil_gemini_aman(
-            model="gemini-3.5-flash",
-            contents=[
-                pertanyaan_user,
-                response.candidates[0].content,
-                types.Content(parts=list_hasil) 
-            ],
-            config=types.GenerateContentConfig(
-                tools=tools,
-                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True) 
-            )
-        )
+        # Simpan jawaban/perintah dari Gemini ke history
+        chat_history.append(response.candidates[0].content)
 
+        response = panggil_gemini_aman(
+        model="gemini-3.5-flash",
+        contents=chat_history + [types.Content(parts=list_hasil)],
+        config=types.GenerateContentConfig(
+        tools=tools,
+        automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True) 
+           )
+            )
     print("[AGENT] Selesai menganalisis, tidak butuh tool lagi.")
     return response.text
 
 if __name__ == "__main__":
-    pertanyaan = "Tolong analisis kategori reject apa yang paling parah di pabrik ini,berapa rata_rejectnya,lalu simpan hasil laporannya ke file,lalu kirim hasilnya ke bos budi"
+    pertanyaan ="kalo batch itu rejectnya brapa"
     print("="*50)
     print("MENJALANKAN AI AGENT...")
     print("="*50)
