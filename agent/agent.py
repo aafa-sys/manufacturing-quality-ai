@@ -78,7 +78,11 @@ def jalankan_agent(pertanyaan_user: str) :
                     hasil_tool = fungsi_python(**parameter)
                     print(f"[TOOL] Hasil didapat dari {nama_tool}")
                 except Exception as e:
-                    hasil_tool = f"Error saat menjalankan tool: {e}"
+                    print(f"[TOOL ERROR] {nama_tool}: {type(e).__name__}: {e}")
+
+                    hasil_tool = f"sistem gagal menjalankan tool'{nama_tool}'. "
+                    "data tidak tersedia saat ini.silahkan coba beberapa saat lagi"
+                    "atau hubungi pihak terkait jika masalah berlanjut"
             else:
                 hasil_tool = f"Error: Tool '{nama_tool}' tidak terdaftar."
                 
@@ -104,7 +108,7 @@ def jalankan_agent(pertanyaan_user: str) :
 
     
     if jumlah_loop  >= 3 and response.function_calls:
-        return "maaf,saya terlalu banyak mencoba menjalankan alat.silahkan perjelas pertanyyan anda"
+        return "maaf,saya terlalu banyak mencoba menjalankan alat.silahkan perjelas pertanyaan anda"
 
 
     print("[AGENT] Selesai menganalisis, tidak butuh tool lagi.")
@@ -114,7 +118,7 @@ def jalankan_agent(pertanyaan_user: str) :
 
 
 if __name__ == "__main__":
-    pertanyaan ="kalo batch itu rejectnya brapa"
+    pertanyaan ="cek batch B001 dong"
     print("="*50)
     print("MENJALANKAN AI AGENT...")
     print("="*50)
