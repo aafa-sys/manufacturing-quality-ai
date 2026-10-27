@@ -58,9 +58,9 @@ def jalankan_agent(pertanyaan_user: str) :
         )
     )
     
-
+    jumlah_loop = 0
     # 3. Agent Loop
-    while response.function_calls:
+    while response.function_calls and jumlah_loop < 3:
         list_hasil = [] 
     
         
@@ -88,7 +88,7 @@ def jalankan_agent(pertanyaan_user: str) :
                     response={"result": hasil_tool}
                 )
             )
-            
+        jumlah_loop += 1
         
         # Simpan jawaban/perintah dari Gemini ke history
         chat_history.append(response.candidates[0].content)
@@ -101,8 +101,17 @@ def jalankan_agent(pertanyaan_user: str) :
         automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True) 
            )
             )
+
+    
+    if jumlah_loop  >= 3 and response.function_calls:
+        return "maaf,saya terlalu banyak mencoba menjalankan alat.silahkan perjelas pertanyyan anda"
+
+
     print("[AGENT] Selesai menganalisis, tidak butuh tool lagi.")
+ 
     return response.text
+
+
 
 if __name__ == "__main__":
     pertanyaan ="kalo batch itu rejectnya brapa"
