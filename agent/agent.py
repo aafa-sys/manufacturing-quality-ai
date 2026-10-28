@@ -59,32 +59,49 @@ def jalankan_agent(pertanyaan_user: str) :
     )
     
     jumlah_loop = 0
+    tool_call_tracker = {}
+
+
+
     # 3. Agent Loop
-    while response.function_calls and jumlah_loop < 3:
+    while response.function_calls and jumlah_loop < 6:
         list_hasil = [] 
     
         
         for function_call in response.function_calls:
             nama_tool = function_call.name
-            parameter = dict(function_call.args)
+            parameter =dict(function_call.args)
             
             print(f"[AGENT] Memutuskan memanggil tool: '{nama_tool}'")
-            
-            fungsi_python = next((t["function"] for t in TOOLS if t["name"] == nama_tool), None)
-            
-            if fungsi_python:
-                try:
-                    
-                    hasil_tool = fungsi_python(**parameter)
-                    print(f"[TOOL] Hasil didapat dari {nama_tool}")
-                except Exception as e:
-                    print(f"[TOOL ERROR] {nama_tool}: {type(e).__name__}: {e}")
 
-                    hasil_tool = f"sistem gagal menjalankan tool'{nama_tool}'. "
-                    "data tidak tersedia saat ini.silahkan coba beberapa saat lagi"
-                    "atau hubungi pihak terkait jika masalah berlanjut"
+            fungsi_python = next((t["function"] for t in TOOLS if t["name"] == nama_tool), None)
+            if fungsi_python:
+                tool_key= (nama_tool,frozenset(parameter.items()))
+
+                
+                if tool_key in tool_call_tracker:
+               
+                    hasil_tool = tool_call_tracker[tool_key]
+                    print(f"[TOOL CACHED] {nama_tool} — pakai hasil sebelumnya")
+                else:
+                    try:
+                        hasil_tool = fungsi_python(**parameter)
+                        print(f"[TOOL] Hasil didapat dari {nama_tool}")
+                        tool_call_tracker[tool_key] = hasil_tool
+                    except Exception as e:
+                        print(f"[TOOL ERROR] {nama_tool}: {type(e).__name__}: {e}")
+                        hasil_tool = (
+                            f"Tool '{nama_tool}' gagal: sistem sedang gangguan. "
+                            f"JANGAN panggil tool ini lagi di percobaan berikutnya. "
+                            f"Sampaikan ke user bahwa fitur ini tidak tersedia, "
+                            f"lalu tawarkan alternatif lain jika ada."
+                        )
+                        tool_call_tracker[tool_key] = hasil_tool
             else:
-                hasil_tool = f"Error: Tool '{nama_tool}' tidak terdaftar."
+                hasil_tool = f"Tool '{nama_tool}' tidak tersedia."
+                print(f"[TOOL] Tool '{nama_tool}' tidak dikenal.")
+           
+
                 
             list_hasil.append(
                 types.Part.from_function_response(
@@ -107,8 +124,8 @@ def jalankan_agent(pertanyaan_user: str) :
             )
 
     
-    if jumlah_loop  >= 3 and response.function_calls:
-        return "maaf,saya terlalu banyak mencoba menjalankan alat.silahkan perjelas pertanyaan anda"
+    if jumlah_loop  >= 6 and response.function_calls:
+        return "maaf,sistem mengalami kendala teknis saat memproses permintaan anda.coba beberapa saat lagi.jika masalah berlanjut,hubungi pihak terkait"
 
 
     print("[AGENT] Selesai menganalisis, tidak butuh tool lagi.")

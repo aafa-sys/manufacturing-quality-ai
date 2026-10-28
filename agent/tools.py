@@ -2,6 +2,7 @@ import db
 from analisis import hitung_kpi
 
 def tool_get_batch(batch_id: str) :
+    
 
     """Mengambil data batch dari database berdasarkan ID."""
     conn = db.get_connection()
