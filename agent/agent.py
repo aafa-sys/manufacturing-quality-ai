@@ -1,4 +1,5 @@
 import os
+import db
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
@@ -85,6 +86,22 @@ def panggil_gemini_aman(model, contents, config):
         ) from e
 
 
+def cari_id_dari_batch_no(batch_no):
+    """cari B000001 dari BT26G001"""
+    conn = db.get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT batch_id FROM public.batch_production WHERE batch_no = %s",(batch_no,)
+            )
+
+            hasil = cur.fetchone()
+            if hasil:
+                return hasil[0]
+            return None
+    finally:
+        conn.close()
+    
 def normalisasi_batch_id(batch_id):
     """normalisasi batch id.
     B1/B01/B001/BOOOOO1 > B000001
@@ -94,20 +111,20 @@ def normalisasi_batch_id(batch_id):
         return batch_id
     batch_id = str(batch_id).strip().upper()
 
+    if batch_id.startswith("BT"):
+        hasil_db =  cari_id_dari_batch_no(batch_id)
+        if hasil_db:
+            return hasil_db
+        return batch_id
+
+  
+
     if batch_id.startswith("B") and batch_id[1:].isdigit():
         angka = batch_id[1:] .lstrip("0") or "0"
         return f"B{angka.zfill(6)}"
 
-    return batch_id
+    return batch_id 
 
-def normalisasi_batch_id(batch_id):
-    if not batch_id:
-        return batch_id
-    batch_id = str(batch_id).strip().upper()
-    if batch_id.startswith("B") and batch_id[1:].isdigit():
-        angka = batch_id[1:].lstrip("0") or "0"
-        return f"B{angka.zfill(6)}"
-    return batch_id
 
 def jalankan_agent(pertanyaan_user: str):
     try:
@@ -223,7 +240,7 @@ def jalankan_agent(pertanyaan_user: str):
 
 
 if __name__ == "__main__":
-    pertanyaan ="cek batch B001 dong"
+    pertanyaan ="cek batch BT26G001 dong"
     print("="*50)
     print("MENJALANKAN AI AGENT...")
     print("="*50)
