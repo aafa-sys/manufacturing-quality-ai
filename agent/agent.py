@@ -83,6 +83,32 @@ def panggil_gemini_aman(model, contents, config):
         raise ApiUnexpectedError(
             "Layanan AI tidak dapat dihubungi. Periksa koneksi internet dan coba lagi."
         ) from e
+
+
+def normalisasi_batch_id(batch_id):
+    """normalisasi batch id.
+    B1/B01/B001/BOOOOO1 > B000001
+    jika format tidak di kenal kembalikan apa adanya"""
+
+    if not batch_id:
+        return batch_id
+    batch_id = str(batch_id).strip().upper()
+
+    if batch_id.startswith("B") and batch_id[1:].isdigit():
+        angka = batch_id[1:] .lstrip("0") or "0"
+        return f"B{angka.zfill(6)}"
+
+    return batch_id
+
+def normalisasi_batch_id(batch_id):
+    if not batch_id:
+        return batch_id
+    batch_id = str(batch_id).strip().upper()
+    if batch_id.startswith("B") and batch_id[1:].isdigit():
+        angka = batch_id[1:].lstrip("0") or "0"
+        return f"B{angka.zfill(6)}"
+    return batch_id
+
 def jalankan_agent(pertanyaan_user: str):
     try:
         function_declarations = [
@@ -121,6 +147,8 @@ def jalankan_agent(pertanyaan_user: str):
             for function_call in response.function_calls:
                 nama_tool = function_call.name
                 parameter = dict(function_call.args)
+                if "batch_id" in parameter:
+                    parameter["batch_id"] = normalisasi_batch_id(parameter["batch_id"])
 
                 print(f"[AGENT] Memutuskan memanggil tool: '{nama_tool}'")
 
@@ -195,7 +223,7 @@ def jalankan_agent(pertanyaan_user: str):
 
 
 if __name__ == "__main__":
-    pertanyaan ="cek batch B000001 dong"
+    pertanyaan ="cek batch B001 dong"
     print("="*50)
     print("MENJALANKAN AI AGENT...")
     print("="*50)
