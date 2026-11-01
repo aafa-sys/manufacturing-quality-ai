@@ -1,0 +1,5 @@
+2026-11-01 10:35:21,274 - INFO - User bertanya: cek batch BT26G001 dong
+2026-11-01 10:35:23,812 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-01 10:35:23,988 - INFO - memanggil tool'tool_get_batch'dengan parameter{'batch_id': 'B000001'}
+2026-11-01 10:35:24,024 - INFO - Tool 'tool_get_batch' sukses.
+2026-11-01 10:35:27,816 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"

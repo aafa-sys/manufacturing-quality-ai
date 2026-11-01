@@ -30,6 +30,6 @@ class TestNormalisasiBatch(unittest.TestCase):
         
         # Cek apakah sistem beneran manggil database pakai ID yang bener
         mock_cari_db.assert_called_once_with("BT26G099")
-
+ 
 if __name__ == '__main__':
     unittest.main()

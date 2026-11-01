@@ -1,8 +1,15 @@
+import logging
 import os
 import db
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
+#Setup Audit Log
+logging.basicConfig(
+    filename='agent_audit.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 from agent.tools import TOOLS
 from agent.prompts import SYSTEM_PROMPT
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
@@ -55,6 +62,7 @@ def panggil_gemini_aman(model, contents, config):
         
         if status_code == 429:
             print("[API ERROR] 429 — kuota/rate limit habis")
+            logging.warning("API Error 429: kuota API habis")
             raise QuotaExceededError(
                 "Kuota API habis. Layanan akan pulih dalam beberapa jam. "
                 "Silakan coba lagi nanti atau hubungi admin."
@@ -144,6 +152,7 @@ def jalankan_agent(pertanyaan_user: str):
         chat_history.append(types.Content(role="user", parts=[types.Part.from_text(text=pertanyaan_user)]))
 
         print(f"[USER] {pertanyaan_user}")
+        logging.info(f"User bertanya: {pertanyaan_user}")
 
         response = panggil_gemini_aman(
             model="gemini-3.5-flash",
@@ -168,6 +177,7 @@ def jalankan_agent(pertanyaan_user: str):
                     parameter["batch_id"] = normalisasi_batch_id(parameter["batch_id"])
 
                 print(f"[AGENT] Memutuskan memanggil tool: '{nama_tool}'")
+                logging.info(f"memanggil tool'{nama_tool}'dengan parameter{parameter}")
 
                 fungsi_python = next((t["function"] for t in TOOLS if t["name"] == nama_tool), None)
                 if fungsi_python:
@@ -180,9 +190,11 @@ def jalankan_agent(pertanyaan_user: str):
                         try:
                             hasil_tool = fungsi_python(**parameter)
                             print(f"[TOOL] Hasil didapat dari {nama_tool}")
+                            logging.info(f"Tool '{nama_tool}' sukses.")
                             tool_call_tracker[tool_key] = hasil_tool
                         except Exception as e:
                             print(f"[TOOL ERROR] {nama_tool}: {type(e).__name__}: {e}")
+                            logging.error(f"Tool '{nama_tool}' gagal: {type(e).__name__}: {e}")
                             hasil_tool = (
                                 f"Tool '{nama_tool}' gagal: sistem sedang gangguan. "
                                 f"JANGAN panggil tool ini lagi di percobaan berikutnya. "
@@ -214,6 +226,7 @@ def jalankan_agent(pertanyaan_user: str):
             )
 
         if jumlah_loop >= 6 and response.function_calls:
+            logging.error("Agent berhenti karena mencapai batas maksimalloop (6).")
             return "maaf, sistem mengalami kendala teknis saat memproses permintaan anda. coba beberapa saat lagi. jika masalah berlanjut, hubungi pihak terkait"
 
         print("[AGENT] Selesai menganalisis, tidak butuh tool lagi.")
