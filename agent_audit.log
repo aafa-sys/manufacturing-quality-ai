@@ -61,3 +61,14 @@
 2026-11-02 20:24:50,043 - INFO - memanggil tool'tool_generate_report'dengan parameter{'report_content': 'LAPORAN KINERJA PRODUKSI DAN ANALISIS REJECT\n\n1. RINGKASAN KPI PRODUKSI\n- Total Batch Diproses: 5\n- Total Target Produksi: 350.000 unit\n- Total Hasil Produksi (Actual): 326.750 unit\n- Total Unit Reject: 23.250 unit\n- Overall Reject Rate: 6,64%\n- Rata-rata Reject per Batch: 4.650 unit\n\n2. BATCH BERMASALAH (REJECT RATE TINGGI)\n- Batch ID: BT26G004\n  * Produk: Amoxicillin 500 mg Caplet\n  * Jumlah Reject: 8.500 unit (17,0%)\n  * Alasan Utama: Kerusakan Kemasan (Blister Leak)\n\n- Batch ID: BT26G005\n  * Produk: Mefenamic Acid 500 mg Caplet\n  * Jumlah Reject: 6.200 unit (12,4%)\n  * Alasan Utama: Keseragaman Bobot Tidak Sesuai\n\n3. ANALISIS KATEGORI REJECT\n- Kerusakan Kemasan (Blister Leak): 8.500 unit (36,56%)\n- Keseragaman Bobot Tidak Sesuai: 6.200 unit (26,67%)\n- Bobot Tidak Sesuai: 3.500 unit (15,05%)\n- Perubahan Warna: 2.850 unit (12,26%)\n- Contamination / Bintik Hitam: 2.200 unit (9,46%)'}
 2026-11-02 20:24:50,049 - INFO - Tool 'tool_generate_report' sukses.
 2026-11-02 20:24:57,791 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-02 21:04:00,203 - INFO - User bertanya: haloooo 
+2026-11-02 21:04:02,001 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-02 21:04:22,320 - INFO - User bertanya: cek  batch B002 dong
+2026-11-02 21:04:26,201 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-02 21:04:26,203 - INFO - memanggil tool'tool_get_batch'dengan parameter{'batch_id': 'B000002'}
+2026-11-02 21:04:26,324 - INFO - Tool 'tool_get_batch' sukses.
+2026-11-02 21:04:28,453 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-02 21:04:38,699 - INFO - User bertanya: brapa rejectnya
+2026-11-02 21:04:40,985 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-02 21:04:53,714 - INFO - User bertanya: statusnya apa
+2026-11-02 21:04:56,899 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"

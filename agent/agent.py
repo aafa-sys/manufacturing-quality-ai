@@ -227,9 +227,13 @@ def jalankan_agent(pertanyaan_user: str):
 
         if jumlah_loop >= 6 and response.function_calls:
             logging.error("Agent berhenti karena mencapai batas maksimalloop (6).")
-            return "maaf, sistem mengalami kendala teknis saat memproses permintaan anda. coba beberapa saat lagi. jika masalah berlanjut, hubungi pihak terkait"
-
+            pesan_gagal =  "maaf, sistem mengalami kendala teknis saat memproses permintaan anda. coba beberapa saat lagi. jika masalah berlanjut, hubungi pihak terkait"
+            #simpan pesan gagal ke history
+            chat_history.append(types.Content(role="model",parts=[types.Part.from_text(text=pesan_gagal)]))
+            return pesan_gagal
         print("[AGENT] Selesai menganalisis, tidak butuh tool lagi.")
+        #simpan jawaban sukses ke ai history
+        chat_history.append(types.Content(role="model",parts=[types.Part.from_text(text=response.text)]))
         return response.text
 
     except QuotaExceededError as e:
