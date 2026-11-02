@@ -21,3 +21,43 @@
 2026-11-01 20:54:57,946 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
 2026-11-01 20:55:34,643 - INFO - User bertanya: qc harus ngapain
 2026-11-01 20:55:47,159 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-02 20:21:02,082 - INFO - User bertanya: halooo
+2026-11-02 20:21:04,425 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-02 20:21:29,449 - INFO - User bertanya: cek semua data batch dong apa yang paling bermasalah
+2026-11-02 20:21:40,563 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-02 20:21:40,567 - INFO - memanggil tool'tool_get_problematic'dengan parameter{'threshold': 0}
+2026-11-02 20:21:40,705 - INFO - Tool 'tool_get_problematic' sukses.
+2026-11-02 20:21:40,706 - INFO - memanggil tool'tool_analyze_rejects'dengan parameter{}
+2026-11-02 20:21:40,776 - INFO - Tool 'tool_analyze_rejects' sukses.
+2026-11-02 20:21:44,181 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-02 20:21:44,187 - INFO - memanggil tool'tool_get_kpi'dengan parameter{}
+2026-11-02 20:21:44,252 - INFO - Tool 'tool_get_kpi' sukses.
+2026-11-02 20:22:00,769 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-02 20:22:00,773 - INFO - memanggil tool'tool_get_problematic'dengan parameter{}
+2026-11-02 20:22:00,936 - INFO - Tool 'tool_get_problematic' sukses.
+2026-11-02 20:22:00,937 - INFO - memanggil tool'tool_analyze_rejects'dengan parameter{}
+2026-11-02 20:22:00,948 - INFO - memanggil tool'tool_get_avg_reject'dengan parameter{}
+2026-11-02 20:22:01,018 - INFO - Tool 'tool_get_avg_reject' sukses.
+2026-11-02 20:22:06,169 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-02 20:22:21,701 - INFO - User bertanya: saran qc dong
+2026-11-02 20:22:26,225 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-02 20:22:55,162 - INFO - User bertanya: kamu bisanya apa saja sebutkan semua yang kamu bisa
+2026-11-02 20:23:01,052 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-02 20:23:01,054 - INFO - memanggil tool'tool_get_kpi'dengan parameter{}
+2026-11-02 20:23:01,113 - INFO - Tool 'tool_get_kpi' sukses.
+2026-11-02 20:23:01,114 - INFO - memanggil tool'tool_get_avg_reject'dengan parameter{}
+2026-11-02 20:23:01,170 - INFO - Tool 'tool_get_avg_reject' sukses.
+2026-11-02 20:23:01,171 - INFO - memanggil tool'tool_get_batch'dengan parameter{'batch_id': 'B000001'}
+2026-11-02 20:23:01,227 - INFO - Tool 'tool_get_batch' sukses.
+2026-11-02 20:23:13,338 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 503 Service Unavailable"
+2026-11-02 20:23:20,862 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-02 20:23:20,869 - INFO - memanggil tool'tool_get_problematic'dengan parameter{'threshold': 15}
+2026-11-02 20:23:20,936 - INFO - Tool 'tool_get_problematic' sukses.
+2026-11-02 20:23:20,937 - INFO - memanggil tool'tool_analyze_rejects'dengan parameter{}
+2026-11-02 20:23:21,000 - INFO - Tool 'tool_analyze_rejects' sukses.
+2026-11-02 20:23:33,412 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-02 20:24:41,476 - INFO - User bertanya: oke buat laporan otomatisnya 
+2026-11-02 20:24:50,038 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-02 20:24:50,043 - INFO - memanggil tool'tool_generate_report'dengan parameter{'report_content': 'LAPORAN KINERJA PRODUKSI DAN ANALISIS REJECT\n\n1. RINGKASAN KPI PRODUKSI\n- Total Batch Diproses: 5\n- Total Target Produksi: 350.000 unit\n- Total Hasil Produksi (Actual): 326.750 unit\n- Total Unit Reject: 23.250 unit\n- Overall Reject Rate: 6,64%\n- Rata-rata Reject per Batch: 4.650 unit\n\n2. BATCH BERMASALAH (REJECT RATE TINGGI)\n- Batch ID: BT26G004\n  * Produk: Amoxicillin 500 mg Caplet\n  * Jumlah Reject: 8.500 unit (17,0%)\n  * Alasan Utama: Kerusakan Kemasan (Blister Leak)\n\n- Batch ID: BT26G005\n  * Produk: Mefenamic Acid 500 mg Caplet\n  * Jumlah Reject: 6.200 unit (12,4%)\n  * Alasan Utama: Keseragaman Bobot Tidak Sesuai\n\n3. ANALISIS KATEGORI REJECT\n- Kerusakan Kemasan (Blister Leak): 8.500 unit (36,56%)\n- Keseragaman Bobot Tidak Sesuai: 6.200 unit (26,67%)\n- Bobot Tidak Sesuai: 3.500 unit (15,05%)\n- Perubahan Warna: 2.850 unit (12,26%)\n- Contamination / Bintik Hitam: 2.200 unit (9,46%)'}
+2026-11-02 20:24:50,049 - INFO - Tool 'tool_generate_report' sukses.
+2026-11-02 20:24:57,791 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"

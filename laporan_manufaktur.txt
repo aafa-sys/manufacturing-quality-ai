@@ -1,16 +1,27 @@
-LAPORAN ANALISIS REJECT PRODUKSI PABRIK
+LAPORAN KINERJA PRODUKSI DAN ANALISIS REJECT
 
-1. Kategori Reject Paling Parah:
-   - Kategori Utama: Dent
-   - Jumlah Reject: 266 unit
+1. RINGKASAN KPI PRODUKSI
+- Total Batch Diproses: 5
+- Total Target Produksi: 350.000 unit
+- Total Hasil Produksi (Actual): 326.750 unit
+- Total Unit Reject: 23.250 unit
+- Overall Reject Rate: 6,64%
+- Rata-rata Reject per Batch: 4.650 unit
 
-Rincian Kategori Reject:
-   - Dent: 266 unit
-   - Material defect: 251 unit
-   - Scratch: 237 unit
-   - Dimension: 229 unit
-   - Contamination: 213 unit
-   - Crack: 199 unit
+2. BATCH BERMASALAH (REJECT RATE TINGGI)
+- Batch ID: BT26G004
+  * Produk: Amoxicillin 500 mg Caplet
+  * Jumlah Reject: 8.500 unit (17,0%)
+  * Alasan Utama: Kerusakan Kemasan (Blister Leak)
 
-2. Rata-rata Reject:
-   - Rata-rata unit reject per batch: 13.86 unit (13.8557)
+- Batch ID: BT26G005
+  * Produk: Mefenamic Acid 500 mg Caplet
+  * Jumlah Reject: 6.200 unit (12,4%)
+  * Alasan Utama: Keseragaman Bobot Tidak Sesuai
+
+3. ANALISIS KATEGORI REJECT
+- Kerusakan Kemasan (Blister Leak): 8.500 unit (36,56%)
+- Keseragaman Bobot Tidak Sesuai: 6.200 unit (26,67%)
+- Bobot Tidak Sesuai: 3.500 unit (15,05%)
+- Perubahan Warna: 2.850 unit (12,26%)
+- Contamination / Bintik Hitam: 2.200 unit (9,46%)
