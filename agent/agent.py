@@ -31,6 +31,7 @@ class ApiUnexpectedError(ApiError):
     """Error API lain yang tidak terklasifikasi."""
 
 chat_history = []
+pending_action = None
 
 
 load_dotenv()
@@ -150,6 +151,30 @@ def jalankan_agent(pertanyaan_user: str):
         tools = [types.Tool(function_declarations=function_declarations)]
 
         chat_history.append(types.Content(role="user", parts=[types.Part.from_text(text=pertanyaan_user)]))
+        global pending_action
+
+# Cek kalau ada aksi yang nunggu konfirmasi
+        if pending_action and pertanyaan_user.strip().upper() in ["YA", "YES", "YAKIN"]:
+            nama_tool = pending_action["tool"]
+            parameter = pending_action["params"]
+            print(f"[HITL] User menyetujui eksekusi {nama_tool}")
+    
+    # Eksekusi tool-nya langsung
+            fungsi_python = next((t["function"] for t in TOOLS if t["name"] == nama_tool), None)
+            hasil_tool = fungsi_python(**parameter) if fungsi_python else "Tool tidak ditemukan."
+    
+    # Reset state
+            pending_action = None 
+    
+            chat_history.append(types.Content(role="model", parts=[types.Part.from_text(text=hasil_tool)]))
+            return hasil_tool
+    
+        elif pending_action and pertanyaan_user.strip().upper() in ["TIDAK", "BATAL", "NO"]:
+            pending_action = None
+            pesan_batal = "Baik, tindakan penghapusan dibatalkan."
+            chat_history.append(types.Content(role="model", parts=[types.Part.from_text(text=pesan_batal)]))
+            return pesan_batal
+
 
         print(f"[USER] {pertanyaan_user}")
         logging.info(f"User bertanya: {pertanyaan_user}")
@@ -178,6 +203,17 @@ def jalankan_agent(pertanyaan_user: str):
 
                 print(f"[AGENT] Memutuskan memanggil tool: '{nama_tool}'")
                 logging.info(f"memanggil tool'{nama_tool}'dengan parameter{parameter}")
+
+                if nama_tool == "tool_hapus_batch":
+                   
+                    pending_action = {"tool": nama_tool, "params": parameter}
+    
+   
+                    pesan_konfirmasi = f"apakah anda yakin ingin menghapus batch {parameter.get('batch_id')}? tindakan ini tidak bisa di batalkan.silahkan balas ya jika setuju"
+
+                    chat_history.append(types.Content(role="model",parts=[types.Part.from_text(text=pesan_konfirmasi)]))
+
+                    return pesan_konfirmasi
 
                 fungsi_python = next((t["function"] for t in TOOLS if t["name"] == nama_tool), None)
                 if fungsi_python:

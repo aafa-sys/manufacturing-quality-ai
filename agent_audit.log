@@ -72,3 +72,30 @@
 2026-11-02 21:04:40,985 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
 2026-11-02 21:04:53,714 - INFO - User bertanya: statusnya apa
 2026-11-02 21:04:56,899 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-03 19:46:08,704 - INFO - User bertanya: halo
+2026-11-03 19:46:14,831 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-03 19:46:27,109 - INFO - User bertanya: hapus batch B000001 DONG
+2026-11-03 19:46:32,021 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-03 19:46:32,024 - INFO - memanggil tool'tool_hapus_batch'dengan parameter{'batch_id': 'B000001'}
+2026-11-03 19:46:39,362 - INFO - User bertanya: ya
+2026-11-03 19:46:42,537 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-03 19:46:42,807 - INFO - memanggil tool'tool_hapus_batch'dengan parameter{'batch_id': 'B000001'}
+2026-11-03 19:46:48,170 - INFO - User bertanya: ya
+2026-11-03 19:46:51,881 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-03 19:46:51,884 - INFO - memanggil tool'tool_hapus_batch'dengan parameter{'batch_id': 'B000001'}
+2026-11-03 19:48:12,506 - INFO - User bertanya: cek batch B001 dong
+2026-11-03 19:48:16,481 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-03 19:48:16,484 - INFO - memanggil tool'tool_get_batch'dengan parameter{'batch_id': 'B000001'}
+2026-11-03 19:48:16,584 - INFO - Tool 'tool_get_batch' sukses.
+2026-11-03 19:48:19,241 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-03 19:48:38,570 - INFO - User bertanya: tolong hapus batch  data B001 ya
+2026-11-03 19:48:44,337 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-03 19:48:44,340 - INFO - memanggil tool'tool_hapus_batch'dengan parameter{'batch_id': 'B000001'}
+2026-11-03 19:48:46,697 - INFO - User bertanya: ya
+2026-11-03 19:48:51,133 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-03 19:48:51,135 - INFO - memanggil tool'tool_hapus_batch'dengan parameter{'batch_id': 'B000001'}
+2026-11-03 20:15:50,212 - INFO - User bertanya: halo
+2026-11-03 20:15:55,134 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-03 20:16:31,338 - INFO - User bertanya: hapus batch B001 dong
+2026-11-03 20:16:37,812 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-03 20:16:37,815 - INFO - memanggil tool'tool_hapus_batch'dengan parameter{'batch_id': 'B000001'}

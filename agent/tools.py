@@ -135,6 +135,10 @@ def tool_get_avg_reject():
     finally:
         conn.close()
 
+
+def tool_hapus_batch(batch_id:str):
+    return f"SUKSES: data batch {batch_id} telah di hapus dari sistem"
+
     
 
 TOOLS = [
@@ -214,5 +218,18 @@ TOOLS = [
      "description":"di gunakan untuk menghitung rata_rata reject",
      "parameters":{},
      "required": []
+    },
+
+    {
+        "name": "tool_hapus_batch",
+        "function": tool_hapus_batch,
+        "description": "menghapus data batch dari database, hanya gunakan jika user meminta hapus",
+        "parameters": {
+            "batch_id": {
+                "type": "string",
+                "description": "id batch yang akan di hapus"
+            }
+        },
+        "required": ["batch_id"]
     }
 ]
