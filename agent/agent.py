@@ -33,6 +33,18 @@ class ApiUnexpectedError(ApiError):
 chat_history = []
 pending_action = None
 
+ALLOWED_TOOLS=[
+    "tool_get_batch",
+    "tool_get_problematic",
+    "tool_get_kpi",
+    "tool_analyze_rejects",
+    "tool_generate_report",
+    "tool_send_notification",
+    "tool_get_avg_reject",
+    "tool_kirim_notifikasi"
+
+]
+
 
 load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"),
@@ -165,6 +177,7 @@ def jalankan_agent(pertanyaan_user: str):
     
     # Reset state
             pending_action = None 
+            
     
             chat_history.append(types.Content(role="model", parts=[types.Part.from_text(text=hasil_tool)]))
             return hasil_tool
@@ -198,12 +211,29 @@ def jalankan_agent(pertanyaan_user: str):
             for function_call in response.function_calls:
                 nama_tool = function_call.name
                 parameter = dict(function_call.args)
+    
                 if "batch_id" in parameter:
                     parameter["batch_id"] = normalisasi_batch_id(parameter["batch_id"])
 
                 print(f"[AGENT] Memutuskan memanggil tool: '{nama_tool}'")
                 logging.info(f"memanggil tool'{nama_tool}'dengan parameter{parameter}")
 
+    #  TAMBAHKAN PAGAR BAJA
+                if nama_tool not in ALLOWED_TOOLS:
+                    print(f"[SECURITY] Akses ditolak: AI mencoba memanggil {nama_tool}")
+                    hasil_tool = f"AKSES DITOLAK: Sistem tidak mengizinkan penggunaan tool '{nama_tool}' untuk saat ini. Sampaikan ke user bahwa tindakan ini dilarang."
+        
+                    list_hasil.append(
+                        types.Part.from_function_response(
+                        name=nama_tool,
+                        response={"result": hasil_tool}
+                   )
+                   )
+                    continue
+  
+                if nama_tool == "tool_hapus_batch":
+                    pending_action = {"tool": nama_tool, "params": parameter}
+       
                 if nama_tool == "tool_hapus_batch":
                    
                     pending_action = {"tool": nama_tool, "params": parameter}
