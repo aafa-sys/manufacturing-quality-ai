@@ -99,3 +99,13 @@
 2026-11-03 20:16:31,338 - INFO - User bertanya: hapus batch B001 dong
 2026-11-03 20:16:37,812 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
 2026-11-03 20:16:37,815 - INFO - memanggil tool'tool_hapus_batch'dengan parameter{'batch_id': 'B000001'}
+2026-11-04 17:26:09,179 - INFO - User bertanya: cek batch b001
+2026-11-04 17:26:15,036 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-04 17:26:15,049 - INFO - memanggil tool'tool_get_batch'dengan parameter{'batch_id': 'B000001'}
+2026-11-04 17:26:15,163 - INFO - Tool 'tool_get_batch' sukses.
+2026-11-04 17:26:26,755 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-04 17:27:08,270 - INFO - User bertanya: kirim ke bos kalau reject lebih dari 1
+2026-11-04 17:27:10,993 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-04 17:27:10,994 - INFO - memanggil tool'tool_kirim_notifikasi'dengan parameter{'pesan': 'Laporan Batch B001 (BT26G001): Jumlah reject sebanyak 2 unit (lebih dari batas 1 unit). Produk: Vitamin C 500 mg Tablet, Jumlah Aktual: 7.998 unit, Status: Pass.'}
+2026-11-04 17:27:10,994 - INFO - Tool 'tool_kirim_notifikasi' sukses.
+2026-11-04 17:27:12,861 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"

@@ -139,6 +139,10 @@ def tool_get_avg_reject():
 def tool_hapus_batch(batch_id:str):
     return f"SUKSES: data batch {batch_id} telah di hapus dari sistem"
 
+def tool_kirim_notifikasi(pesan: str):
+    #mengsimulasikan mengirim pesan ke bos 
+    return f"SUKSES:notififkasi terkirim ke bos.pesan: '{pesan}'"
+
     
 
 TOOLS = [
@@ -231,5 +235,15 @@ TOOLS = [
             }
         },
         "required": ["batch_id"]
-    }
+    },
+
+    {"name": "tool_kirim_notifikasi",
+     "function": tool_kirim_notifikasi,
+     "description": "mengirim pesan atau notifikasi ke atasan/bos",
+     "parameters":{
+         "pesan": {
+             "type": "string",
+             "description": "isi pesan notifikasi yang akan di kirim"
+         }
+     },"required":["pesan"]}
 ]
