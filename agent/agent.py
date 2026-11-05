@@ -198,6 +198,7 @@ def jalankan_agent(pertanyaan_user: str):
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_PROMPT,
                 tools=tools,
+                response_mime_type="application/json",
                 automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
             )
         )
@@ -287,6 +288,7 @@ def jalankan_agent(pertanyaan_user: str):
                 contents=chat_history + [types.Content(parts=list_hasil)],
                 config=types.GenerateContentConfig(
                     tools=tools,
+                    response_mime_type="application/json",
                     automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
                 )
             )
@@ -323,7 +325,7 @@ def jalankan_agent(pertanyaan_user: str):
 
 
 if __name__ == "__main__":
-    pertanyaan ="cek batch BT26G001 dong"
+    pertanyaan ="berikan data batch B001 dalam format json, isinya harus ada batch_id,nama_produk,dan jumlah reject."
     print("="*50)
     print("MENJALANKAN AI AGENT...")
     print("="*50)
