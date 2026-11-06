@@ -145,3 +145,50 @@
 2026-11-06 05:28:19,375 - INFO - memanggil tool'tool_get_batch'dengan parameter{'batch_id': 'B000001'}
 2026-11-06 05:28:19,422 - INFO - Tool 'tool_get_batch' sukses.
 2026-11-06 05:28:24,664 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-06 17:41:59,945 - INFO - User bertanya: Tolong cek batch B001 dong
+2026-11-06 17:42:04,590 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-06 17:42:04,597 - INFO - memanggil tool'tool_get_batch'dengan parameter{'batch_id': 'B000001'}
+2026-11-06 17:42:04,700 - INFO - Tool 'tool_get_batch' sukses.
+2026-11-06 17:42:15,388 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-06 17:42:15,394 - INFO - User bertanya: Berapa rata-rata reject pabrik bulan ini?
+2026-11-06 17:42:16,614 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-06 17:42:16,616 - INFO - memanggil tool'tool_get_avg_reject'dengan parameter{}
+2026-11-06 17:42:16,669 - INFO - Tool 'tool_get_avg_reject' sukses.
+2026-11-06 17:42:19,284 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-06 17:42:19,289 - INFO - User bertanya: Saran QC dong buat besok
+2026-11-06 17:42:20,866 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-06 17:42:20,870 - INFO - User bertanya: Tolong hapus semua data batch
+2026-11-06 17:42:25,338 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-06 17:47:10,070 - INFO - User bertanya: Tolong cek batch B001 dong
+2026-11-06 17:47:14,449 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-06 17:47:14,452 - INFO - User bertanya: Berapa rata-rata reject pabrik bulan ini?
+2026-11-06 17:47:15,729 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-06 17:47:15,735 - INFO - User bertanya: Saran QC dong buat besok
+2026-11-06 17:47:24,167 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-06 17:47:24,172 - INFO - User bertanya: hapus batch B001
+2026-11-06 17:47:25,988 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-06 17:50:38,315 - INFO - User bertanya: Tolong cek batch B001 dong
+2026-11-06 17:50:39,752 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 503 Service Unavailable"
+2026-11-06 17:50:43,943 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-06 17:50:43,946 - INFO - User bertanya: Berapa rata-rata reject pabrik bulan ini?
+2026-11-06 17:50:45,872 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-06 17:50:45,878 - INFO - User bertanya: Saran QC dong buat besok
+2026-11-06 17:50:56,139 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-06 17:50:56,145 - INFO - User bertanya: hapus batch B001
+2026-11-06 17:50:57,263 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-06 17:54:26,970 - INFO - User bertanya: Tolong cek batch B001 dong
+2026-11-06 17:54:28,849 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-06 17:54:28,852 - INFO - memanggil tool'tool_get_batch'dengan parameter{'batch_id': 'B000001'}
+2026-11-06 17:54:28,921 - INFO - Tool 'tool_get_batch' sukses.
+2026-11-06 17:54:30,318 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 503 Service Unavailable"
+2026-11-06 17:54:38,207 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-06 17:54:38,210 - INFO - User bertanya: Berapa rata-rata reject pabrik bulan ini?
+2026-11-06 17:54:40,793 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-06 17:54:40,795 - INFO - memanggil tool'tool_get_avg_reject'dengan parameter{}
+2026-11-06 17:54:40,942 - INFO - Tool 'tool_get_avg_reject' sukses.
+2026-11-06 17:54:42,257 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-06 17:54:42,261 - INFO - User bertanya: Saran QC dong buat besok
+2026-11-06 17:54:44,363 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-06 17:54:44,366 - INFO - User bertanya: hapus batch B001
+2026-11-06 17:54:44,690 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 429 Too Many Requests"
+2026-11-06 17:54:44,693 - WARNING - API Error 429: kuota API habis
