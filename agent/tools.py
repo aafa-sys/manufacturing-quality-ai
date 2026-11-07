@@ -143,6 +143,11 @@ def tool_kirim_notifikasi(pesan: str):
     #mengsimulasikan mengirim pesan ke bos 
     return f"SUKSES:notififkasi terkirim ke bos.pesan: '{pesan}'"
 
+
+def tool_input_material(batch_id: str, material: str, qty: str):
+    return f"SUKSES: Data material {material} sebanyak {qty} untuk batch {batch_id} telah dimasukkan ke sistem."
+
+
     
 
 TOOLS = [
@@ -245,5 +250,19 @@ TOOLS = [
              "type": "string",
              "description": "isi pesan notifikasi yang akan di kirim"
          }
-     },"required":["pesan"]}
+     },"required":["pesan"]},
+
+
+     {
+             "name": "tool_input_material",
+             "function": tool_input_material,
+             "description": "Memasukkan data material yang digunakan ke sistem.",
+             "parameters": {
+                 "batch_id": {"type": "string", "description": "ID batch"},
+                 "material": {"type": "string", "description": "Nama material"},
+                 "qty": {"type": "string", "description": "Jumlah material"}
+             },
+             "required": ["batch_id", "material", "qty"]
+         }
+     
 ]

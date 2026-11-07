@@ -192,3 +192,16 @@
 2026-11-06 17:54:44,366 - INFO - User bertanya: hapus batch B001
 2026-11-06 17:54:44,690 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 429 Too Many Requests"
 2026-11-06 17:54:44,693 - WARNING - API Error 429: kuota API habis
+2026-11-06 19:03:46,430 - INFO - User bertanya: berikan data batch B001 dalam format json, isinya harus ada batch_id,nama_produk,dan jumlah reject.
+2026-11-06 19:03:47,015 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 429 Too Many Requests"
+2026-11-06 19:03:47,017 - WARNING - API Error 429: kuota API habis
+2026-11-08 05:25:12,474 - INFO - User bertanya: brapa rata2 reject pabrik bulan ini
+2026-11-08 05:25:16,633 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-08 05:26:20,455 - INFO - User bertanya: brapa rata2 reject pabrik bulan ini
+2026-11-08 05:26:21,964 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-08 05:26:21,966 - INFO - memanggil tool'tool_get_avg_reject'dengan parameter{}
+2026-11-08 05:26:22,057 - INFO - Tool 'tool_get_avg_reject' sukses.
+2026-11-08 05:26:23,117 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-08 05:26:23,119 - INFO - memanggil tool'tool_get_kpi'dengan parameter{}
+2026-11-08 05:26:23,158 - INFO - Tool 'tool_get_kpi' sukses.
+2026-11-08 05:26:24,936 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"

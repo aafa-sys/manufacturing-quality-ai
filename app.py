@@ -27,6 +27,7 @@ with st.sidebar:
     st.write("👨‍💼 **Role:** Administrator")
     st.write("📊 **Database:** PostgreSQL")
     st.write("🧠 **Engine:** Gemini Agent")
+    role_user = st.selectbox("Pilih Role (Simulasi):", ["operator", "manager", "admin"])
 
 # Judul Utama
 st.title("AI Asisten Produksi")
@@ -51,8 +52,8 @@ if prompt := st.chat_input("Contoh: cek batch BT26G001 dong"):
     with st.chat_message("assistant"):
         with st.spinner("Menganalisis database..."):
             try:
-                # Ini fungsi dari agent.py lu
-                jawaban = jalankan_agent(prompt) 
+                # Ini fungsi dari agent.py
+                jawaban = jalankan_agent(prompt, role=role_user)
                 st.markdown(jawaban)
             except Exception as e:
                 st.error(f"Error: {e}")

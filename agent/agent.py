@@ -147,7 +147,7 @@ def normalisasi_batch_id(batch_id):
     return batch_id 
 
 
-def jalankan_agent(pertanyaan_user: str):
+def jalankan_agent(pertanyaan_user: str,role: str = "operator"):
     try:
         function_declarations = [
             types.FunctionDeclaration(
@@ -196,7 +196,12 @@ def jalankan_agent(pertanyaan_user: str):
             model="gemini-3.5-flash",
             contents=chat_history,
             config=types.GenerateContentConfig(
-                system_instruction=SYSTEM_PROMPT,
+                system_instruction=SYSTEM_PROMPT + f"""
+
+                   ATURAN AKSES USER (ROLE: {role.upper()}):
+                       1. OPERATOR: Kamu HANYA bertugas membantu operator memasukkan data material ke sistem menggunakan 'tool_input_material'. DILARANG menjawab pertanyaan cek data, analisis, KPI, atau hapus data.
+                       2. MANAGER: Kamu boleh mengakses semua. TAPI DILARANG MENGHAPUS DATA.
+                       3. ADMIN: Memiliki akses penuh (kecuali hapus data tetap harus pakai konfirmasi).""",
                 tools=tools,
                 
                 automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
@@ -205,6 +210,25 @@ def jalankan_agent(pertanyaan_user: str):
 
         jumlah_loop = 0
         tool_call_tracker = {}
+
+        izin_role_ini = list(ALLOWED_TOOLS)
+
+
+        if role == "operator":
+            izin_role_ini = ["tool_input_material","tool_send_notification"]
+
+        elif role == "manager":
+            izin_role_ini = ["tool_get_batch",
+                "tool_get_problematic",
+                "tool_get_kpi",
+                "tool_analyze_rejects",
+                "tool_generate_report",
+                "tool_send_notification",
+                "tool_get_avg_reject",
+                "tool_kirim_notifikasi"]
+        elif role == "admin":
+           
+            izin_role_ini.append("tool_hapus_batch")
 
         while response.function_calls and jumlah_loop < 6:
             list_hasil = []
@@ -220,7 +244,7 @@ def jalankan_agent(pertanyaan_user: str):
                 logging.info(f"memanggil tool'{nama_tool}'dengan parameter{parameter}")
 
     #  TAMBAHKAN PAGAR BAJA
-                if nama_tool not in ALLOWED_TOOLS:
+                if nama_tool not in izin_role_ini:
                     print(f"[SECURITY] Akses ditolak: AI mencoba memanggil {nama_tool}")
                     hasil_tool = f"AKSES DITOLAK: Sistem tidak mengizinkan penggunaan tool '{nama_tool}' untuk saat ini. Sampaikan ke user bahwa tindakan ini dilarang."
         
@@ -232,8 +256,7 @@ def jalankan_agent(pertanyaan_user: str):
                    )
                     continue
   
-                if nama_tool == "tool_hapus_batch":
-                    pending_action = {"tool": nama_tool, "params": parameter}
+               
        
                 if nama_tool == "tool_hapus_batch":
                    
@@ -322,14 +345,32 @@ def jalankan_agent(pertanyaan_user: str):
     except Exception as e:
         print(f"[FATAL] {type(e).__name__}: {e}")
         return " Terjadi kesalahan internal. Hubungi admin."
+def jalankan_agent_json(pertanyaan_user:str):
 
+    jawaban_teks = jalankan_agent(pertanyaan_user)
+
+    if "maaf" in jawaban_teks.lower() or "error" in jawaban_teks.lower():
+        return jawaban_teks
+    #panggil gemini khusu buat ubah teks menjadi json
+
+    try:
+        response = panggil_gemini_aman(
+            model="gemini-3.5-flash",
+            contents=f"ubah teks berikut menjadi json murni: {jawaban_teks}",
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json"
+            )
+        )
+        return response.text
+    except Exception as e:
+        return f'{{"error": "gagal format json: {e}"}}'
 
 if __name__ == "__main__":
-    pertanyaan ="berikan data batch B001 dalam format json, isinya harus ada batch_id,nama_produk,dan jumlah reject."
+    pertanyaan ="hapus batch B001"
     print("="*50)
     print("MENJALANKAN AI AGENT...")
     print("="*50)
-    jawaban_akhir = jalankan_agent(pertanyaan)
+    jawaban_akhir = jalankan_agent(pertanyaan,role="manager")
     print("\n" + "="*50)
     print("--- JAWABAN AKHIR DARI AGENT ---")
     print(jawaban_akhir)
