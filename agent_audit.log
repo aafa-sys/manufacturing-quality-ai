@@ -205,3 +205,9 @@
 2026-11-08 05:26:23,119 - INFO - memanggil tool'tool_get_kpi'dengan parameter{}
 2026-11-08 05:26:23,158 - INFO - Tool 'tool_get_kpi' sukses.
 2026-11-08 05:26:24,936 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-08 06:09:37,988 - INFO - [MANAGER]User bertanya: hapus batch B001
+2026-11-08 06:09:39,822 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-08 06:10:17,360 - INFO - [ADMIN]User bertanya: hapus batch B001
+2026-11-08 06:10:26,570 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-08 06:11:54,480 - INFO - [OPERATOR]User bertanya: brapa rata-rata reject
+2026-11-08 06:12:01,599 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"

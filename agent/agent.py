@@ -190,7 +190,7 @@ def jalankan_agent(pertanyaan_user: str,role: str = "operator"):
 
 
         print(f"[USER] {pertanyaan_user}")
-        logging.info(f"User bertanya: {pertanyaan_user}")
+        logging.info(f"[{role.upper()}]User bertanya: {pertanyaan_user}")
 
         response = panggil_gemini_aman(
             model="gemini-3.5-flash",
@@ -366,11 +366,11 @@ def jalankan_agent_json(pertanyaan_user:str):
         return f'{{"error": "gagal format json: {e}"}}'
 
 if __name__ == "__main__":
-    pertanyaan ="hapus batch B001"
+    pertanyaan ="brapa rata-rata reject"
     print("="*50)
     print("MENJALANKAN AI AGENT...")
     print("="*50)
-    jawaban_akhir = jalankan_agent(pertanyaan,role="manager")
+    jawaban_akhir = jalankan_agent(pertanyaan,role="operator")
     print("\n" + "="*50)
     print("--- JAWABAN AKHIR DARI AGENT ---")
     print(jawaban_akhir)
