@@ -370,7 +370,7 @@ if __name__ == "__main__":
     print("="*50)
     print("MENJALANKAN AI AGENT...")
     print("="*50)
-    jawaban_akhir = jalankan_agent(pertanyaan,role="operator")
+    jawaban_akhir = jalankan_agent(pertanyaan,role="operator ")
     print("\n" + "="*50)
     print("--- JAWABAN AKHIR DARI AGENT ---")
     print(jawaban_akhir)

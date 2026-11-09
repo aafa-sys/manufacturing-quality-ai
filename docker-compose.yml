@@ -1,0 +1,32 @@
+services:
+  # 1. KARDUS DATABASE
+  db:
+    image: postgres:15-alpine
+    container_name: manufacturing-db
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: manufacturing_ai_system
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # 2. KARDUS APLIKASI AI
+  app:
+    build: .
+    container_name: manufacturing-app
+    ports:
+      - "8501:8501"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=manufacturing_ai_system
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
