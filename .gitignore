@@ -10,3 +10,6 @@ manufactur/
 *.xlsx
 *.xls
 *.csv
+*.sql
+backup_pabrik.sql
+backup_pabrik_plain.sql
