@@ -81,7 +81,7 @@ ROADMAP
 - Sudah: Integrasi PostgreSQL + Gemini AI
 - Sudah: Decision layer (CRITICAL/WARNING/GOOD)
 - Sudah: PDF report QC & Structured logging
-- Sudah: Unit test (22 passed)
+- Sudah: Unit test (29 passed)
 - Sudah: AI Agent (Tool Calling, Memory, Guardrails)
 - Sudah: Docker Deployment (Docker Compose & Volumes)
 - Sudah: Web UI (Streamlit)
