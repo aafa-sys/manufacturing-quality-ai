@@ -3,3 +3,6 @@ google-genai
 psycopg2-binary
 python-dotenv
 tenacity
+pytest
+fastapi
+chromadb

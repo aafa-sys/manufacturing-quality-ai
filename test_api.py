@@ -34,13 +34,16 @@ def test_wrong_api_key():
 
 def test_missing_fields():
     api_key = os.getenv("API_KEY")
+    if not api_key:
+        import pytest
+        pytest.skip("API_KEY tidak diset di environment, test dilewati.")
+        
     response = client.post(
         "/input-batch",
         headers={"X-API-Key": api_key},
-        json={"batch_no": "TEST"}     # cuma 1 field, harusnya 6
+        json={"batch_no": "TEST"}
     )
     assert response.status_code == 422
-
 def test_batch_not_found():
     response = client.get("/batch/NOTEXIST999")
     assert response.status_code == 404
