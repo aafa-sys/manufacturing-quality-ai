@@ -1,135 +1,95 @@
-Manufacturing Quality AI
+MANUFACTURING QUALITY AI
 
-Sistem analisis kualitas produksi otomatis yang mengintegrasikan PostgreSQL, Google Gemini, dan decision layer untuk mendeteksi batch bermasalah pada lini manufaktur.
+Sistem analisis kualitas produksi otomatis yang mengintegrasikan PostgreSQL, Google Gemini, dan Decision Layer untuk mendeteksi batch bermasalah pada lini manufaktur. Kini dilengkapi dengan arsitektur container dan sistem AI Agent cerdas.
 
-Deskripsi
 
-Sistem ini membantu tim Quality Control (QC) menganalisis data produksi secara otomatis. Setiap kali dijalankan, sistem akan:
+DESKRIPSI
+
+Sistem ini membantu tim Quality Control (QC) menganalisis data produksi secara otomatis. Saat ini, sistem dapat diakses melalui UI interaktif (Streamlit) di mana AI Agent akan:
 
 1. Membaca data batch produksi dari PostgreSQL
-2. Menghitung KPI kualitas (reject rate, total reject, worst batch)
-3. Mengirim data ke Google Gemini untuk analisis AI
-4. Memvalidasi output AI dengan Pydantic
-5. Menentukan keputusan (CRITICAL / WARNING / GOOD)
-6. Menyimpan hasil keputusan ke database
-7. Menghasilkan laporan PDF otomatis
-8. Mencatat metrik biaya per panggilan AI
+2. Memproses bahasa natural dari user (Natural Language Processing)
+3. Memanggil tools (fungsi Python) untuk mengambil data spesifik (Batch, KPI, Reject)
+4. Memvalidasi parameter dan memfilter akses berdasarkan Role (Operator/Manager/Admin)
+5. Meminta konfirmasi (HITL) sebelum mengeksekusi tindakan berbahaya
+6. Menghasilkan laporan dan analisis
 
-Fitur
 
-· Analisis 100 batch produksi secara otomatis
-· Deteksi batch bermasalah berdasarkan reject quantity dan reject rate
-· Analisis AI dengan Google Gemini
-· Validasi output AI dengan Pydantic
-· Decision layer deterministik: CRITICAL / WARNING / GOOD
-· Simpan log keputusan ke tabel decision_log di PostgreSQL
-· PDF report QC otomatis dengan header profesional
-· Grafik metrics (matplotlib) — bar, pie, line chart
-· Pipeline orchestrator — satu perintah, semua jalan
-· Cost tracking — estimasi biaya per panggilan AI
-· Retry otomatis saat API gagal
-· Structured logging (JSON) dengan rotasi file
-· 22 unit test — lulus semua
+FITUR UTAMA
 
-Teknologi
+1. Agentic AI (Tool Calling): AI tidak hanya menjawab, tapi bisa mengeksekusi query ke database secara mandiri via tool.
+2. Dockerized Architecture: Seluruh sistem (App & DB) berjalan di dalam container menggunakan Docker Compose.
+3. Human-in-the-Loop (HITL): Pengaman ganda untuk mencegah AI menghapus data tanpa izin (butuh konfirmasi Ya/Tidak).
+4. Dynamic Tool Allowlist: Pembatasan akses level kode (RBAC) berdasarkan role user.
+5. Data Persistence: Menggunakan Docker Volumes agar data PostgreSQL aman saat container di-restart.
+6. Analisis 100 batch produksi secara otomatis.
+7. Decision layer deterministik: CRITICAL / WARNING / GOOD.
+8. 29 unit test - lulus semua.
+9. Cost tracking: estimasi biaya per panggilan AI.
+10. Structured logging (JSON) dengan rotasi file.
 
-· Python 3.13
-· PostgreSQL
-· Google Gemini API
-· Pydantic
-· psycopg2
-· tenacity
-· python-dotenv
-· matplotlib
-· fpdf2
-· Power BI (dashboard visualisasi)
 
-Cara Menjalankan
+TEKNOLOGI
+
+1. Python 3.11 (Di dalam Docker)
+2. PostgreSQL (via Docker Image)
+3. Google Gemini API (SDK google-genai)
+4. Streamlit (UI Chat Interaktif)
+5. Docker & Docker Compose
+6. Pydantic, psycopg2, tenacity, matplotlib, fpdf2
+
+
+CARA MENJALANKAN
+
+Prasyarat: Docker Desktop harus terinstal dan berjalan.
 
 1. Clone repositori
-
 git clone https://github.com/aafa-sys/manufacturing-quality-ai.git
 cd manufacturing-quality-ai
 
-2. Install dependency
-
-pip install python-dotenv psycopg2-binary google-genai pydantic tenacity matplotlib fpdf2 pytest
-
-3. Buat file .env di root folder
-
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=masystem
+2. Buat file .env di root folder (Pastikan file ini ada di .gitignore)
 DB_USER=postgres
 DB_PASSWORD=password_kamu
+DB_NAME=manufacturing_ai_system
 GEMINI_API_KEY=API_KEY_KAMU
 
-4. Jalankan program
+3. Nyalakan sistem dengan Docker
+docker compose up -d
 
-python main.py
+4. Akses Web UI di browser: http://localhost:8501
 
-Atau jalankan pipeline lengkap (analisis + metrics + grafik + PDF):
-
+5. (Opsional) Jika ingin menjalankan script Python murni di lokal (legacy):
 python pipeline.py
 
-5. Jalankan test
 
-python -m pytest -v
+STRUKTUR FOLDER
 
-Struktur Folder
+1. agent/ (Folder utama AI Agent)
+   - agent.py (Orkestrator utama LLM & Tool Calling)
+   - tools.py (Daftar fungsi yang bisa dipanggil AI)
+   - prompts.py (System Prompt / Guardrails)
 
-manufacturing_ai/
+2. app.py (Web UI Streamlit)
+3. Dockerfile & docker-compose.yml (Konfigurasi Container)
+4. db.py, config.py, models.py (Konfigurasi & Model Database)
+5. main.py, pipeline.py, analisis.py (Script analisis legacy)
+6. test_*.py (Kumpulan Unit Test)
 
-· main.py                    (Orchestrator utama)
-· config.py                  (Baca .env)
-· db.py                      (Koneksi & query database)
-· analisis.py                (Perhitungan KPI)
-· models.py                  (Pydantic models)
-· decision.py                (Decision layer)
-· action.py                  (Action dispatcher)
-· exceptions.py              (Custom exception)
-· logger_config.py           (Structured logging JSON)
-· buat_pdf.py                (PDF report generation)
-· grafik.py                  (Visualisasi metrics)
-· analisis_metrics.py        (Analisis runs.csv)
-· pipeline.py                (Pipeline orchestrator)
-· test_analisis.py           (Unit test)
-· test_integration.py        (Integration test)
-· test_error_handling.py     (Error handling test)
-· test_metrics.py            (Metrics test)
-· prompts/                   (Prompt template versioned)
-· services/                  (llm_service.py - Integrasi Gemini)
-· logs/                      (Log output)
 
-Output
+ROADMAP
 
-Setiap kali dijalankan, sistem menghasilkan:
+- Sudah: Integrasi PostgreSQL + Gemini AI
+- Sudah: Decision layer (CRITICAL/WARNING/GOOD)
+- Sudah: PDF report QC & Structured logging
+- Sudah: Unit test (22 passed)
+- Sudah: AI Agent (Tool Calling, Memory, Guardrails)
+- Sudah: Docker Deployment (Docker Compose & Volumes)
+- Sudah: Web UI (Streamlit)
+- Belum: FastAPI (REST API murni)
+- Belum: MQTT / OPC UA integration (IoT)
+- Belum: Computer Vision untuk defect detection
 
-· Terminal log — JSON terstruktur
-· logs/app.log — arsip log dengan rotasi
-· runs.csv — metrik setiap run (token, biaya, status)
-· laporan_qc.pdf — laporan QC produksi profesional
-· grafik_batch.png — visualisasi batch bermasalah
-· decision_log — tabel database berisi keputusan
 
-Test
+AUTHOR
 
-· 22 unit test — lulus semua
-· Jalankan: python -m pytest -v
-
-Roadmap
-
-☑ Integrasi PostgreSQL + Gemini AI
-☑ Decision layer (CRITICAL/WARNING/GOOD)
-☑ PDF report QC
-☑ Structured logging (JSON)
-☑ Unit test (22 passed)
-☐ FastAPI (REST API)
-☐ Docker deployment
-☐ AI Agent (LangGraph)
-☐ MQTT / OPC UA integration
-☐ Computer Vision untuk defect detection
-
-Author
-
-Tofa — admust08@gmail.com
+Tofa - admust08@gmail.com
