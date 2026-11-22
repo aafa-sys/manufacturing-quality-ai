@@ -22,10 +22,17 @@ async def main():
         nilai_counter = await counter.read_value()
         nilai_alarm   = await alarm.read_value()
 
-        print(f"Suhu    : {nilai_suhu}")
+        print(f"Suhu    : {nilai_suhu}°C")
         print(f"Status  : {nilai_status}")
         print(f"Counter : {nilai_counter}")
         print(f"Alarm   : {nilai_alarm}")
+
+        if nilai_suhu > 80:
+            keputusan = "BAHAYA"
+            print(f" {keputusan}! Suhu {nilai_suhu}°C melebihi batas 80°C")
+        else:
+            keputusan = "AMAN"
+            print(f" {keputusan}. Suhu {nilai_suhu}°C dalam batas normal")
 
         conn = psycopg2.connect(
             host=os.getenv("DB_HOST"),
@@ -43,7 +50,7 @@ async def main():
         cur.close()
         conn.close()
 
-        print("Tersimpan ke database")
+        print(f"Tersimpan ke database (status: {keputusan})")
 
 if __name__ == "__main__":
     asyncio.run(main())
