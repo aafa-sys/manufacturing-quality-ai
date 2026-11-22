@@ -211,3 +211,10 @@
 2026-11-08 06:10:26,570 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
 2026-11-08 06:11:54,480 - INFO - [OPERATOR]User bertanya: brapa rata-rata reject
 2026-11-08 06:12:01,599 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-22 08:44:59,900 - INFO - [OPERATOR]User bertanya: cek Batch B001
+2026-11-22 08:45:03,668 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-22 08:47:20,241 - INFO - [MANAGER]User bertanya: cek Batch B001
+2026-11-22 08:47:24,191 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-11-22 08:47:24,205 - INFO - memanggil tool'tool_get_batch'dengan parameter{'batch_id': 'B000001'}
+2026-11-22 08:47:24,363 - INFO - Tool 'tool_get_batch' sukses.
+2026-11-22 08:47:26,854 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
