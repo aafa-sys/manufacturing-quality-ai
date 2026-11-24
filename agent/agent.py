@@ -41,7 +41,9 @@ ALLOWED_TOOLS=[
     "tool_generate_report",
     "tool_send_notification",
     "tool_get_avg_reject",
-    "tool_kirim_notifikasi"
+    "tool_kirim_notifikasi",
+    "tool_cek_semua_mesin",
+    "tool_cek_suhu_tertinggi"
 
 ]
 
@@ -225,7 +227,9 @@ def jalankan_agent(pertanyaan_user: str,role: str = "operator"):
                 "tool_generate_report",
                 "tool_send_notification",
                 "tool_get_avg_reject",
-                "tool_kirim_notifikasi"]
+                "tool_kirim_notifikasi",
+                "tool_cek_semua_mesin",
+                "tool_cek_suhu_tertinggi"]
         elif role == "admin":
            
             izin_role_ini.append("tool_hapus_batch")

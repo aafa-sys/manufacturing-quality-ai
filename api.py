@@ -107,6 +107,7 @@ class BatchUpdate(BaseModel):
 
 class AgentRequest(BaseModel):
     pertanyaan : str
+    role : str = "operator"
 
 def cek_rate_limit(ip,max_request=5,window_detik=60):
     sekarang = time.time()
@@ -360,7 +361,7 @@ async def soft_delete_batch_from_db(batch_id : str,api_key: str=Depends(verify_a
 @app.post("/agent/chat")
 async def chat_dengan_agent(data: AgentRequest,api_key:str = Depends(verify_api_key)):
     try :
-        hasil = jalankan_agent(data.pertanyaan)
+        hasil = jalankan_agent(data.pertanyaan, role=data.role)
         return {"hasil_request" : hasil}
     except Exception as e:
         raise HTTPException(500,str(e))

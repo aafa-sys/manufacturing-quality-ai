@@ -147,10 +147,80 @@ def tool_kirim_notifikasi(pesan: str):
 def tool_input_material(batch_id: str, material: str, qty: str):
     return f"SUKSES: Data material {material} sebanyak {qty} untuk batch {batch_id} telah dimasukkan ke sistem."
 
+def tool_cek_semua_mesin():
+    """ambil data terbaru per sumber industri (mqtt,plc,opcua)"""
+    conn = db.get_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+        SELECT DISTINC ON (sumber) sumber, suhu, status, counter, alarm, waktu
+        FROM industrial_data
+        ORDER BY sumber, waktu DESC
+        """)
+        rows = cur.fetchall()
+        cur.close()
+
+        if not rows:
+            return "belum ada data industri tersimpan"
+
+        teks = "data terbaru per sumber industri: \n"
+        for sumber, suhu, status, counter, alarm, waktu, in rows:
+            teks += f"- {sumber}: suhu={suhu}, status={status}, counter={counter}, alarm={alarm}, waktu={waktu}\n"
+        return teks
+    except Exception as e:
+        return f"error: {e}"
+    finally:
+        conn.close()
+
+def tool_cek_suhu_tertinggi(limit: int = 3):
+    """ambil n sumber dengan suhu tertinggi."""
+    conn = db.get_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+        SELECT sumber, suhu, waktu
+        FROM industrial_data
+        WHERE suhu IS NOT NULL
+        ORDER BY suhu DESC
+        LIMIT %s
+        """,(limit,))
+        rows = cur.fetchall()
+        cur.close()
+
+        if not rows:
+            return "belum ada data suhu tersimpan"
+        teks = f"Top {limit} suhu tertinggi:\n"
+        for sumber, suhu, waktu in rows:
+            teks += f"- {sumber}: {suhu}C ({waktu})\n"
+        return teks
+    except Exception as e:
+        return f"error {e}"
+    finally:
+        conn.close()
+
+
+
 
     
 
 TOOLS = [
+
+
+    {   "name": "tool_cek_semua_mesin",
+        "function": tool_cek_semua_mesin,
+        "description": "ambil data terbaru per sumber industri (mqtt,plc,opcua).gunakan untuk melihat kondisi mesin terkini",
+        "parameters": {},
+         "required": [] },
+
+    {   "name": "tool_cek_suhu_tertinggi",
+        "function": tool_cek_suhu_tertinggi,
+        "description": "cari sumber industri dengan suhu tertinggi. gunakan untuk deteksi overheat",
+        "parameters": {
+            "limit": {
+                "type": "integer",
+                "description": "jumlsh sumber teratas yang di tampilkan .default 3"
+            }
+        },"required": []},
     {
         "name": "tool_get_batch",
         "function": tool_get_batch,
