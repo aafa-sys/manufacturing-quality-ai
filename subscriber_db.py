@@ -11,18 +11,22 @@ DB_USER = os.getenv("DB_USER")
 DB_PASSWORD =os.getenv("DB_PASSWORD")
 
 def simpan_ke_db(topic, suhu):
-    conn = psycopg2.connect(
-        host=DB_HOST, port=DB_PORT, dbname=DB_NAME,
-        user=DB_USER, password=DB_PASSWORD
-    )
-    cur = conn.cursor()
-    cur.execute(
-        "INSERT INTO sensor_data (topic, suhu) VALUES (%s, %s)",
-        (topic, suhu)
-    )
-    conn.commit()
-    cur.close()
-    conn.close()
+    try:
+        conn = psycopg2.connect(
+            host=DB_HOST, port=DB_PORT, dbname=DB_NAME,
+            user=DB_USER, password=DB_PASSWORD
+            )
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO sensor_data (topic, suhu) VALUES (%s, %s)",
+            (topic, suhu)
+            )
+        conn.commit()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        #jika db mati gateway tetep hidup dan memberikan pesan di bawah
+        print(f"gagal simpan ke database: {e}")
 
 def on_message(client, userdata, msg):
     suhu = msg.payload.decode()

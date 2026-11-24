@@ -1,3 +1,11 @@
+import pytest
+import os
+from dotenv import load_dotenv
+import psycopg2
+
+load_dotenv()
+
+
 """
 Integration test: menguji beberapa fungsi bekerja bersama.
 Fokus: alur dari KPI -> Decision Engine -> hasil keputusan.
@@ -64,3 +72,42 @@ def test_decision_engine_good_karena_overall_rate():
     hasil = engine.evaluate(DummyAnalysis())
     
     assert hasil.status == DecisionStatus.GOOD
+
+
+def test_koneksi_database_gateway():
+    """test untuk memastikan python bisa connect ke postgresql"""
+
+    try:
+        conn = psycopg2.connect(
+            host= os.getenv("DB_HOST"),
+            port=os.getenv("DB_PORT"),
+            dbname=os.getenv("DB_NAME"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD")
+
+        )
+
+        assert conn is not None
+        conn.close()
+
+    except Exception as e:
+        pytest.fail(f"koneksi ke database gagal: {e}")
+def test_tabel_sensor_data_ada():
+    """test untuk memastikan tabel sensor data bener2 ada"""
+    conn = psycopg2.connect(
+        host=os.getenv("DB_HOST"),
+        port=os.getenv("DB_PORT"),
+        dbname=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD")
+    )
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT EXISTS (
+        SELECT FROM information_schema.tables
+        WHERE table_name = 'sensor_data');""")
+
+    tabel_ada = cur.fetchone()[0]
+    cur.close()
+    conn.close()
+    assert tabel_ada is True,"tabel sensor_data tidak di temukan"

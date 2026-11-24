@@ -35,7 +35,7 @@ def on_mqtt_message(client, userdata, msg):
         print(f"[MQTT] Error: {e}")
 
 def start_mqtt():
-    client = mqtt.Client()
+    client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1)
     client.on_message = on_mqtt_message
     client.connect("localhost", 1883)
     client.subscribe("pabrik/suhu")
