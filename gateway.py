@@ -11,8 +11,8 @@ load_dotenv()
 
 def simpan_ke_db(sumber, suhu=None, status=None, counter=None, alarm=None):
     conn = psycopg2.connect(
-        host=os.getenv("DB_HOST"),
-        port=os.getenv("DB_PORT"),
+        host=os.getenv("DB_HOST","db"),
+        port=os.getenv("DB_PORT","5432"),
         dbname=os.getenv("DB_NAME"),
         user=os.getenv("DB_USER"),
         password=os.getenv("DB_PASSWORD"),
@@ -37,14 +37,14 @@ def on_mqtt_message(client, userdata, msg):
 def start_mqtt():
     client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1)
     client.on_message = on_mqtt_message
-    client.connect("localhost", 1883)
+    client.connect(os.getenv("MQTT_HOST"), 1883)
     client.subscribe("pabrik/suhu")
     client.loop_start()
     print("[MQTT] Subscriber jalan di background")
     return client
 
 def baca_plc():
-    client = ModbusTcpClient("127.0.0.1", port=5020)
+    client = ModbusTcpClient("host.docker.internal", port=5020)
     if not client.connect():
         return None
     hasil = client.read_holding_registers(address=0, count=4)
@@ -59,7 +59,7 @@ def baca_plc():
     }
 
 async def baca_opcua():
-    async with OpcUaClient(url="opc.tcp://127.0.0.1:4840") as client:
+    async with OpcUaClient(url="opc.tcp://host.docker.internal:4840") as client:
         idx = await client.get_namespace_index("http://pabrik.local")
         pabrik = await client.nodes.objects.get_child(f"{idx}:Pabrik")
         suhu    = await (await pabrik.get_child(f"{idx}:Suhu")).read_value()

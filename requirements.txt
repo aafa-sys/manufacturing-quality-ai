@@ -6,3 +6,6 @@ tenacity
 pytest
 fastapi
 chromadb
+paho-mqtt
+pymodbus
+asyncua

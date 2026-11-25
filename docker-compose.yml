@@ -12,7 +12,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  # 2. KARDUS APLIKASI AI
+  # 2. KARDUS APLIKASI AI (Streamlit)
   app:
     build: .
     container_name: manufacturing-app
@@ -27,6 +27,31 @@ services:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
     depends_on:
       - db
+
+  # 3. KARDUS MQTT BROKER (BARU DITAMBAHKAN)
+  mqtt-broker:
+    image: eclipse-mosquitto:latest
+    container_name: mqtt-broker
+    ports:
+      - "1883:1883"
+
+  # 4. KARDUS GATEWAY (IOT)
+  gateway:
+    build: .
+    container_name: manufacturing-gateway
+    command: python gateway.py
+    volumes:
+      - .:/app
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=manufacturing_ai_system
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - MQTT_HOST=mqtt-broker
+    depends_on:
+      - db
+      - mqtt-broker
 
 volumes:
   postgres_data:
