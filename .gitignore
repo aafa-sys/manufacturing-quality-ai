@@ -13,3 +13,4 @@ manufactur/
 *.sql
 backup_pabrik.sql
 backup_pabrik_plain.sql
+!.env.example
