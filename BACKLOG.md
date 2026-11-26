@@ -13,4 +13,4 @@ Catatan hal-hal yang harus dikerjakan nanti (Technical Debt & Future Features).
 
 ## 3. Fitur Selanjutnya
 - [ ] Integrasi IoT Gateway (MQTT + OPC UA + Modbus) jadi satu kesatuan di `industrial_data`.
-- [ ] Deploy aplikasi ke Cloud/VPS pakai Docker Compose.
+- [ ] Deploy aplikasi ke Cloud/VPS pakai Docker Compose.## Day 334 CLOSED 2026-11-27 
