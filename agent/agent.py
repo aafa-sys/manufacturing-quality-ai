@@ -111,7 +111,7 @@ def panggil_gemini_aman(model, contents, config):
 
 def cari_id_dari_batch_no(batch_no):
     """cari B000001 dari BT26G001"""
-    conn = db.get_connection()
+    conn = db.get_agent_connection()
     try:
         with conn.cursor() as cur:
             cur.execute(

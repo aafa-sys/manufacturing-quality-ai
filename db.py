@@ -1,6 +1,6 @@
 import psycopg2
 from datetime import date,datetime
-from config import DB_CONFIG
+from config import DB_CONFIG,AGENT_DB_CONFIG
 from exceptions import DatabaseError
 import json
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
@@ -20,6 +20,15 @@ def get_connection():
         return conn
     except psycopg2.Error as e:
         logger.error(f"Database connection failed: {e}")
+        raise DatabaseError(f"Tidak bisa koneksi ke database: {e}")
+
+def get_agent_connection():
+    """Koneksi read-only untuk AI Agent (agent_reader)."""
+    try:
+        conn = psycopg2.connect(**AGENT_DB_CONFIG)
+        return conn
+    except psycopg2.Error as e:
+        logger.error(f"Agent DB connection failed: {e}")
         raise DatabaseError(f"Tidak bisa koneksi ke database: {e}")
 
 def fetch_all_batches(conn,limit =97,offset=0):

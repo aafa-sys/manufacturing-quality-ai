@@ -15,4 +15,12 @@ DB_CONFIG = {
     "password": os.getenv("DB_PASSWORD", ""),
 }
 
+AGENT_DB_CONFIG = {
+    "host": os.getenv("DB_HOST", "localhost"),
+    "port": os.getenv("DB_PORT", "5432"),
+    "database": os.getenv("DB_NAME", "masystem"),
+    "user": os.getenv("AGENT_DB_USER", "agent_reader"),
+    "password": os.getenv("AGENT_DB_PASSWORD", ""),
+}
+
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
