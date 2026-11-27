@@ -5,7 +5,7 @@ def tool_get_batch(batch_id: str) :
     
 
     """Mengambil data batch dari database berdasarkan ID."""
-    conn = db.get_connection()
+    conn = db.get_agent_connection()
     try:
         data = db.fetch_batch(conn, batch_id)
         if not data:
@@ -21,7 +21,7 @@ def tool_get_batch(batch_id: str) :
 
 def tool_get_problematic(threshold :int = 20):
     "mengaambil batch bermasalah dengan reject di atas 20 bisa dicustom thresholdnya"
-    conn = db.get_connection()
+    conn = db.get_agent_connection()
 
     try:
         
@@ -49,7 +49,7 @@ def tool_get_problematic(threshold :int = 20):
 
 
 def tool_get_kpi():
-    conn = db.get_connection()
+    conn = db.get_agent_connection()
     try:
         data = db.fetch_all_batches(conn)
         if not data:
@@ -67,7 +67,7 @@ def tool_get_kpi():
 
 
 def tool_analyze_rejects():
-    conn = db.get_connection()
+    conn = db.get_agent_connection()
     try:
         data = db.fetch_reject_details(conn)
         if not data:
@@ -116,7 +116,7 @@ def tool_send_notification(penerima:str,pesan:str):
         return f"gagal mengirim notifikasi:{e}"
 
 def tool_get_avg_reject():
-    conn = db.get_connection()
+    conn = db.get_agent_connection()
     try:
         data =db.fetch_all_batches(conn)
         if not data:
@@ -149,7 +149,7 @@ def tool_input_material(batch_id: str, material: str, qty: str):
 
 def tool_cek_semua_mesin():
     """ambil data terbaru per sumber industri (mqtt,plc,opcua)"""
-    conn = db.get_connection()
+    conn = db.get_agent_connection()
     try:
         cur = conn.cursor()
         cur.execute("""
@@ -174,7 +174,7 @@ def tool_cek_semua_mesin():
 
 def tool_cek_suhu_tertinggi(limit: int = 3):
     """ambil n sumber dengan suhu tertinggi."""
-    conn = db.get_connection()
+    conn = db.get_agent_connection()
     try:
         cur = conn.cursor()
         cur.execute("""

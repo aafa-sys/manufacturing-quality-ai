@@ -25,6 +25,8 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=manufacturing_ai_system
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - AGENT_DB_USER=${AGENT_DB_USER}
+      - AGENT_DB_PASSWORD=${AGENT_DB_PASSWORD}
     depends_on:
       - db
 
@@ -49,6 +51,8 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - MQTT_HOST=mqtt-broker
+      - AGENT_DB_USER=${AGENT_DB_USER}
+      - AGENT_DB_PASSWORD=${AGENT_DB_PASSWORD}
     depends_on:
       - db
       - mqtt-broker
